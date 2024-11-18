@@ -1,5 +1,7 @@
 // AppNavigator.js
-import React from 'react';
+import React, {useEffect} from 'react';
+import { StatusBar } from 'react-native';
+
 import AuthNavigator from '../modules/auth/navigation/AuthNavigator';
 import TestNavigation from './testNavigation';
 import WelcomeNavigator from '../modules/welcome/navigation/WelcomeNavigator';
@@ -11,6 +13,11 @@ const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   const { isAuthenticated } = useAuth();
+  useEffect(() => {
+    StatusBar.setHidden(true); // Hide the status bar
+    StatusBar.setBarStyle('light-content');
+    StatusBar.setBackgroundColor('transparent');
+  }, []);
 
   return (
     <NavigationContainer>
