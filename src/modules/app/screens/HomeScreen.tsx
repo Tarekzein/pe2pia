@@ -5,10 +5,43 @@ import HomeHeader from '../components/home/HomeHeader';
 import Card from '../components/home/Card';
 
 const HomeScreen: React.FC = () => {
+  const posts = [
+    {
+      username: 'Username 1',
+      category: 'Turtles',
+      contentType: 'image',
+      content: '', // Replace with an image URL
+      likes: 150,
+      comments: 60,
+      shares: 3,
+    },
+    {
+      username: 'Username 2',
+      category: 'Birds',
+      contentType: 'text',
+      content: 'The text what username shares will appear here.',
+      likes: 90,
+      comments: 10,
+      shares: 5,
+    },
+  ];
+
   return (
-    <View style={tailwind`flex-1`}>
+    <View style={tailwind`flex-1  dark:bg-gray-900`}>
       {/* Header */}
       <HomeHeader />
+
+      {/* Sticky Navigation Bar */}
+      <View
+        style={tailwind`flex-row bg-[#FFF8EC] dark:bg-gray-800 p-4 justify-between items-center shadow-md sticky top-0 z-10`}
+      >
+        {[...Array(6)].map((_, index) => (
+          <View
+            key={index}
+            style={tailwind`w-10 h-10 bg-gray-300 dark:bg-gray-700 rounded-full`}
+          />
+        ))}
+      </View>
 
       {/* Content */}
       <ScrollView
@@ -16,41 +49,20 @@ const HomeScreen: React.FC = () => {
         contentContainerStyle={tailwind`py-4`}
         showsVerticalScrollIndicator={false}
       >
-        {/* Section 1: Navigation Bar (Placeholder for the icons row) */}
-        <View style={tailwind`flex-row bg-[#FFF8EC] p-4 justify-between items-center mb-4`}>
-          {[...Array(6)].map((_, index) => (
-            <View
+        {/* Posts */}
+        <View>
+          {posts.map((post, index) => (
+            <Card
               key={index}
-              style={tailwind`w-10 h-10 bg-gray-300 rounded-full`}
+              username={post.username}
+              category={post.category}
+              contentType={post.contentType as 'image' | 'text'}
+              content={post.content}
+              likes={post.likes}
+              comments={post.comments}
+              shares={post.shares}
             />
           ))}
-        </View>
-
-        {/* Section 2: Posts */}
-        <View>
-          {/* Card 1 */}
-          <Card
-            username="Username 1"
-            category="Turtles"
-            contentType="image"
-            content="" // Replace with image URL when using real data
-            likes={150}
-            comments={60}
-            shares={3}
-          />
-
-          {/* Card 2 */}
-          <Card
-            username="Username 2"
-            category="Birds"
-            contentType="text"
-            content="The text what username shares will appear here."
-            likes={90}
-            comments={10}
-            shares={5}
-          />
-
-          {/* Add more cards here */}
         </View>
       </ScrollView>
     </View>
