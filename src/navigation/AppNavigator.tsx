@@ -3,7 +3,7 @@ import React, {useEffect} from 'react';
 import { StatusBar } from 'react-native';
 
 import AuthNavigator from '../modules/auth/navigation/AuthNavigator';
-import TestNavigation from './testNavigation';
+import MainNavigator from '../modules/app/navigation/MainNavigator';
 import WelcomeNavigator from '../modules/welcome/navigation/WelcomeNavigator';
 import { useAuth } from '../hooks/AuthProvider';
 import { NavigationContainer } from '@react-navigation/native';
@@ -22,14 +22,18 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {isAuthenticated ? (
-          <Stack.Screen name="Authenticated" component={TestNavigation} />
-        ) : (
-          <>
-            <Stack.Screen name="WelcomeNavigator" component={WelcomeNavigator} />
-            <Stack.Screen name="AuthNavigator" component={AuthNavigator} />
-          </>
-        )}
+        {/*{isAuthenticated ? (*/}
+        {/*  <Stack.Screen name="MainNavigator" component={MainNavigator} />*/}
+        {/*) : (*/}
+        {/*  <>*/}
+        {/*    <Stack.Screen name="WelcomeNavigator" component={WelcomeNavigator} />*/}
+        {/*    <Stack.Screen name="AuthNavigator" component={AuthNavigator} />*/}
+        {/*  </>*/}
+        {/*)}*/}
+        {/*<Stack.Screen name="WelcomeNavigator" component={WelcomeNavigator} />*/}
+        {/*<Stack.Screen name="AuthNavigator" component={AuthNavigator} />*/}
+        <Stack.Screen name="MainNavigator" component={MainNavigator} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
