@@ -8,7 +8,7 @@ import { passwordValidator } from '../helpers/passwordValidator';
 import {useAuth} from '../../../hooks/AuthProvider';
 import tailwind from 'twrnc';
 import Animated, {Easing, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
-import Icon from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' });
@@ -143,6 +143,7 @@ export default function LoginScreen({ navigation }) {
             autoCompleteType="email"
             textContentType="emailAddress"
             keyboardType="email-address"
+            errorText={email.error}
           />
 
         </View>
@@ -160,6 +161,7 @@ export default function LoginScreen({ navigation }) {
               value={password.value}
               onChangeText={(text) => setPassword({ value: text, error: '' })}
               secureTextEntry={!passwordVisible}
+              errorText={password.error}
             />
             {/* Toggle Visibility Icon */}
             <TouchableOpacity
@@ -167,7 +169,7 @@ export default function LoginScreen({ navigation }) {
               style={tailwind`absolute z-2 inset-y-0 right-5 top-9 flex items-center`}
             >
               <Icon
-                name={passwordVisible ? 'visibility' : 'visibility-off'}
+                name={passwordVisible ? 'eye' : 'eye-off'}
                 size={20}
                 color="#888"
               />
@@ -230,7 +232,7 @@ export default function LoginScreen({ navigation }) {
 
       </View>
 
-      <View style={tailwind`flex-row`}>
+      <View style={tailwind`flex-row mb-5`}>
         <Text style={tailwind`text-white text-lg`}>Don’t have an account? </Text>
         <TouchableOpacity onPress={() => navigation.replace('RegisterScreen')}>
           <Text style={tailwind`text-white text-lg font-bold text-[#00347D]`}>Sign up!</Text>
