@@ -28,7 +28,7 @@ const Card: React.FC<CardProps> = ({ username, category, contentType, content, l
           </View>
         </View>
         <TouchableOpacity>
-          <Text style={tailwind`text-gray-400 dark:text-gray-500 text-xl`}>•••</Text>
+            <Icon name="more-vertical"  style={tailwind`text-[#FFB300] font-bold dark:text-gray-500 text-3xl`} />
         </TouchableOpacity>
       </View>
 
@@ -45,7 +45,7 @@ const Card: React.FC<CardProps> = ({ username, category, contentType, content, l
       )}
 
       {/* Action Buttons */}
-      <View style={tailwind`flex-row justify-between items-center mt-4 px-5`}>
+      <View style={tailwind`flex-row justify-between border-t border-gray-300 items-center mt-4 px-5 pt-4`}>
         <TouchableOpacity style={tailwind`flex-col justify-center items-center`}>
           <Icon name="heart" size={30} color="#FFB300" />
           <Text style={tailwind`text-sm text-gray-600 dark:text-gray-400`}>{likes}</Text>
