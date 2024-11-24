@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, Paragraph} from 'react-native-paper';
+import {Card} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import tailwind from 'twrnc';
 import { View, Image } from 'react-native';
@@ -16,7 +16,7 @@ interface NotificationCardProps {
 }
 
 const NotificationCard: React.FC<NotificationCardProps> = ({ notification }) => {
-  const getIcon = (type) => {
+  const getIcon = (type: string) => {
     switch (type) {
       case 'success':
         return 'check-circle-outline';
