@@ -21,12 +21,15 @@ const MainNavigator: React.FC = () => {
         // headerShown: false,
         tabBarActiveTintColor: '#00347D',
         tabBarInactiveTintColor: '#FEA928',
+        tabBarIndicatorStyle: {
+          backgroundColor: 'transparent',
+        },
         tabBarStyle: {
           display: 'flex',
           backgroundColor: '#FFF8EC',
           borderBottomWidth: 0, // No border for the top tab bar
           height: 60,
-          marginBottom:20,
+          // marginBottom:20,
         },
         tabBarItemStyle: {
           display: 'flex',

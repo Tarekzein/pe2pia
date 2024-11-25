@@ -13,11 +13,11 @@ const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   const { isAuthenticated } = useAuth();
-  useEffect(() => {
-    StatusBar.setHidden(true); // Hide the status bar
-    StatusBar.setBarStyle('light-content');
-    StatusBar.setBackgroundColor('transparent');
-  }, []);
+  // useEffect(() => {
+  //   StatusBar.setHidden(true); // Hide the status bar
+  //   StatusBar.setBarStyle('light-content');
+  //   StatusBar.setBackgroundColor('transparent');
+  // }, []);
 
   return (
     <NavigationContainer>
