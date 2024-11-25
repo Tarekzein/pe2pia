@@ -8,6 +8,7 @@ interface ChatItemProps {
   time: string;
   isTyping?: boolean;
   unreadCount?: number;
+  onPress?: () => void;
 }
 
 const ChatCard: React.FC<ChatItemProps> = ({
@@ -16,9 +17,9 @@ const ChatCard: React.FC<ChatItemProps> = ({
                                              time,
                                              isTyping,
                                              unreadCount = 0,
-                                           }) => {
+                                             onPress}) => {
   return (
-    <TouchableOpacity style={tailwind`flex-row p-4 border-b border-gray-200`}>
+    <TouchableOpacity style={tailwind`flex-row p-4 border-b border-gray-200`} onPress={onPress}>
       {/* Avatar Placeholder */}
       <View style={tailwind`w-10 h-10 rounded-full bg-gray-200`} />
 

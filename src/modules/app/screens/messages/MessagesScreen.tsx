@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, ScrollView, TouchableOpacity, Text, Animated, Dimensions } from 'react-native';
 import tailwind from 'twrnc';
-import ChatCard from '../components/messages/ChatCard'; // Assuming the ChatCard component is separate
+import ChatCard from '../../components/messages/ChatCard.tsx'; // Assuming the ChatCard component is separate
 import Icon from 'react-native-vector-icons/Feather';
 
 const tabs = ['All chats', 'Groups', 'Requests'];
@@ -93,7 +93,7 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
       <View style={tailwind`flex-row justify-between items-center mt-5 mx-5`}>
         <Icon name="arrow-left" size={30} color="#00347D" onPress={() => navigation.goBack()} />
         <View style={tailwind`flex-row items-center`}>
-          <Icon name="edit" style={tailwind`mr-3`} size={25} color="#FEA928" />
+          <Icon name="edit" style={tailwind`mr-7`} size={25} color="#FEA928" />
           <Icon name="search" size={25} color="#FEA928" />
         </View>
       </View>
@@ -137,6 +137,7 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
               time={chat.time}
               isTyping={chat.isTyping}
               unreadCount={chat.unreadCount}
+              onPress={() => navigation.navigate('Chat', { title: chat.title })}
             />
           ))}
         </ScrollView>

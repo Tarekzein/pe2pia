@@ -5,7 +5,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import HomeScreen from '../screens/HomeScreen';
 import SearchScreen from '../screens/SearchScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
-import MessagesScreen from '../screens/MessagesScreen.tsx';
+import MessagesNavigator from './MessagesNavigator';
 import ProfileScreen from '../screens/ProfileScreen';
 import tailwind from 'twrnc';
 import { View } from 'react-native';
@@ -91,7 +91,7 @@ const MainNavigator: React.FC = () => {
 
       <Tab.Screen
         name="MessagesScreen"
-        component={MessagesScreen}
+        component={MessagesNavigator}
         options={{
           tabBarIcon: ({ color, focused }) => (
             <View style={tailwind`flex justify-center items-center`}>
