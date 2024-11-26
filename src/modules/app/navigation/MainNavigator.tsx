@@ -9,25 +9,29 @@ import MessagesNavigator from './MessagesNavigator';
 import ProfileNavigator from './ProfileNavigator';
 import tailwind from 'twrnc';
 import { View } from 'react-native';
+import { useTheme } from '../../../context/ThemeContext';
 
 const Tab = createMaterialTopTabNavigator();  // Updated to Material Top Tab
 
 
 const MainNavigator: React.FC = () => {
+  const { theme } = useTheme();
+  const isDarkMode = theme === 'dark';
   return (
     <Tab.Navigator
       initialRouteName="HomeScreen"
       screenOptions={{
         // headerShown: false,
-        tabBarActiveTintColor: '#00347D',
-        tabBarInactiveTintColor: '#FEA928',
+        tabBarActiveTintColor: isDarkMode?'#FEA928':'#00347D',
+        tabBarInactiveTintColor: isDarkMode?'#FFF8EC':'#FEA928',
         tabBarIndicatorStyle: {
           backgroundColor: 'transparent',
         },
         tabBarStyle: {
           display: 'flex',
-          backgroundColor: '#FFF8EC',
-          borderBottomWidth: 0, // No border for the top tab bar
+          backgroundColor: isDarkMode ?'rgb(31 41 55)': '#FFF8EC',
+          borderTopWidth: 0.2, // No border for the top tab bar
+          borderTopColor: isDarkMode ? '#D1D5DB': '#00347D66'  ,
           height: 60,
           // marginBottom:20,
         },

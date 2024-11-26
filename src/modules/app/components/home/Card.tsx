@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import tailwind from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather';
+import { useTheme } from '../../../../context/ThemeContext';
 
 interface CardProps {
   username: string;
@@ -13,50 +14,90 @@ interface CardProps {
   shares: number;
 }
 
-const Card: React.FC<CardProps> = ({ username, category, contentType, content, likes, comments, shares }) => {
+const Card: React.FC<CardProps> = ({
+                                     username,
+                                     category,
+                                     contentType,
+                                     content,
+                                     likes,
+                                     comments,
+                                     shares,
+                                   }) => {
+  const { theme } = useTheme();
+
+  const isDarkMode = theme === 'dark';
+  const backgroundColor = isDarkMode ? tailwind`bg-gray-800`.backgroundColor : '#FFF8EC';
+  const textColorPrimary = isDarkMode ? '#FEA928' : '#00347D';
+  const textColorSecondary = isDarkMode ? '#FEA928' : '#FFB300';
+  const iconColor = isDarkMode ? '#FEA928' : '#FFB300';
+  const borderColor = isDarkMode ? '#eeeeee54' : '#D1D5DB'; // Tailwind's gray-300
+
   return (
-    <View style={tailwind`mb-4 bg-[#FFF8EC] dark:bg-gray-800 rounded-xl p-4`}>
+    <View style={[tailwind`mb-4 rounded-xl p-4`, { backgroundColor }]}>
       {/* User Info */}
       <View style={tailwind`flex-row justify-between items-center`}>
         <View style={tailwind`flex-row`}>
-          <View style={tailwind`w-10 h-10 mr-2 bg-gray-300 dark:bg-gray-700 rounded-full`} />
+          <View
+            style={[
+              tailwind`w-10 h-10 mr-2 rounded-full`,
+              isDarkMode? tailwind`bg-gray-600`:tailwind`bg-gray-300`, // Tailwind's gray-300
+            ]}
+          />
           <View>
-            <Text style={tailwind`text-lg font-bold text-[#00347D] dark:text-gray-200`}>
+            <Text style={[tailwind`text-lg font-bold`, { color: textColorPrimary }]}>
               {username}
             </Text>
-            <Text style={tailwind`text-sm text-[#FFB300] dark:text-yellow-500`}>{category}</Text>
+            <Text style={[tailwind`text-sm`, { color: textColorSecondary }]}>{category}</Text>
           </View>
         </View>
         <TouchableOpacity>
-            <Icon name="more-vertical"  style={tailwind`text-[#FFB300] font-bold dark:text-gray-500 text-3xl`} />
+          <Icon name="more-vertical" size={24} color={textColorSecondary} />
         </TouchableOpacity>
       </View>
 
       {/* Content */}
       {contentType === 'image' ? (
-        <View style={tailwind`mt-4 bg-gray-200 dark:bg-gray-700 rounded-lg h-60`}>
+        <View
+          style={[
+            tailwind`mt-4 rounded-lg h-60 justify-center items-center`,
+            isDarkMode? tailwind`bg-gray-600`:tailwind`bg-gray-300`, // Tailwind's gray-300
+          ]}
+        >
           {/* Replace with Image component when using real images */}
-          <Text style={tailwind`text-center text-gray-500 dark:text-gray-400`}>
+          <Text style={[tailwind`text-center`, { color: isDarkMode ? '#A1A1AA' : '#6B7280' }]}>
             Image Placeholder
           </Text>
         </View>
       ) : (
-        <Text style={tailwind`mt-4 text-sm text-gray-800 dark:text-gray-300`}>{content}</Text>
+        <Text style={[tailwind`mt-4 text-sm`, { color: isDarkMode ? '#D1D5DB' : '#374151' }]}>
+          {content}
+        </Text>
       )}
 
       {/* Action Buttons */}
-      <View style={tailwind`flex-row justify-between border-t border-gray-300 items-center mt-4 px-5 pt-4`}>
+      <View
+        style={[
+          tailwind`flex-row justify-between items-center mt-4 pt-4`,
+          { borderTopWidth: 1, borderColor },
+        ]}
+      >
         <TouchableOpacity style={tailwind`flex-col justify-center items-center`}>
-          <Icon name="heart" size={30} color="#FFB300" />
-          <Text style={tailwind`text-sm text-gray-600 dark:text-gray-400`}>{likes}</Text>
+          <Icon name="heart" size={30} color={iconColor} />
+          <Text style={[tailwind`text-sm`, { color: isDarkMode ? '#A1A1AA' : '#6B7280' }]}>
+            {likes}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity style={tailwind`flex-col justify-center items-center`}>
-          <Icon name="message-circle" size={30} color="#FFB300" />
-          <Text style={tailwind`text-sm text-gray-600 dark:text-gray-400`}>{comments}</Text>
+          <Icon name="message-circle" size={30} color={iconColor} />
+          <Text style={[tailwind`text-sm`, { color: isDarkMode ? '#A1A1AA' : '#6B7280' }]}>
+            {comments}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity style={tailwind`flex-col justify-center items-center`}>
-          <Icon name="share-2" size={30} color="#FFB300" />
-          <Text style={tailwind`text-sm text-gray-600 dark:text-gray-400`}>{shares}</Text>
+          <Icon name="share-2" size={30} color={iconColor} />
+          <Text style={[tailwind`text-sm`, { color: isDarkMode ? '#A1A1AA' : '#6B7280' }]}>
+            {shares}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

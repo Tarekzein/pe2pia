@@ -7,20 +7,25 @@ interface SearchFieldProps {
     navigation: any;
     searchValue: string;
     setSearchValue: (value: string) => void;
+    isDarkMode: boolean;
 }
 
-const SearchField: React.FC<SearchFieldProps> = ({ navigation, searchValue, setSearchValue }) => {
+const SearchField: React.FC<SearchFieldProps> = ({ navigation, searchValue, setSearchValue,isDarkMode }) => {
     return (
       <View style={tailwind`relative w-full`}>
           {/* Left Icon */}
           <TouchableOpacity
-            style={tailwind`absolute inset-y-0 left-3 flex justify-center`}
+            style={tailwind`absolute z-1 inset-y-0 left-3 flex justify-center`}
             onPress={() => navigation.goBack()}
           >
               <Icon
                 name="arrow-left"
                 size={20}
-                style={tailwind`text-[#00347D] dark:text-gray-400 hover:text-gray-900 dark:hover:text-white`}
+                style={
+                isDarkMode ? tailwind`text-[#f4f4f4]`
+                :
+                tailwind`text-[#00347D]`
+              }
               />
           </TouchableOpacity>
 
@@ -29,7 +34,14 @@ const SearchField: React.FC<SearchFieldProps> = ({ navigation, searchValue, setS
             value={searchValue}
             onChangeText={setSearchValue}
             placeholder=""
-            style={tailwind`bg-transparent border-2 border-[#00347D] text-gray-900 text-lg rounded-full focus:ring-blue-500 focus:border-blue-500 w-full pl-12 pr-12 py-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-center`}
+            style={
+            [
+              tailwind`border-2 text-lg rounded-full w-full pl-12 pr-12 py-2 text-center`
+              ,
+              isDarkMode ? tailwind`bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500`
+                :
+              tailwind`bg-transparent border-[#00347D] text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:text-white`
+            ]}
             placeholderTextColor={tailwind.color('[#00347D]')}
           />
 

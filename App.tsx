@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import AppNavigator from './src/navigation/AppNavigator';
 import { AuthProvider } from './src/hooks/AuthProvider';
+import { ThemeProvider } from './src/context/ThemeContext'; // Adjust the path as necessary
 import store, { persistor } from './src/modules/store';
 import './global.css';
 
@@ -10,9 +11,11 @@ const App: React.FC = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <AuthProvider>
-          <AppNavigator />
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <AppNavigator />
+          </AuthProvider>
+        </ThemeProvider>
       </PersistGate>
     </Provider>
   );

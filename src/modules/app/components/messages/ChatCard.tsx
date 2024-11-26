@@ -9,6 +9,7 @@ interface ChatItemProps {
   isTyping?: boolean;
   unreadCount?: number;
   onPress?: () => void;
+  isDarkMode?: boolean;
 }
 
 const ChatCard: React.FC<ChatItemProps> = ({
@@ -17,9 +18,12 @@ const ChatCard: React.FC<ChatItemProps> = ({
                                              time,
                                              isTyping,
                                              unreadCount = 0,
-                                             onPress}) => {
+                                             onPress,
+                                            isDarkMode}) => {
   return (
-    <TouchableOpacity style={tailwind`flex-row p-4 border-b border-gray-200`} onPress={onPress}>
+    <TouchableOpacity style={[tailwind`flex-row p-4 border-b`,
+      isDarkMode? tailwind`border-gray-600`:tailwind`border-gray-200`
+    ]} onPress={onPress}>
       {/* Avatar Placeholder */}
       <View style={tailwind`w-10 h-10 rounded-full bg-gray-200`} />
 
@@ -27,7 +31,9 @@ const ChatCard: React.FC<ChatItemProps> = ({
       <View style={tailwind`flex-1 ml-3`}>
         {/* Header Row: Title and Time */}
         <View style={tailwind`flex-row justify-between items-center`}>
-          <Text style={tailwind`text-lg font-medium text-[#00347D]`}>{title}</Text>
+          <Text style={[tailwind`text-lg font-medium`,
+            isDarkMode? tailwind`text-white`:tailwind`text-[#00347D]`
+          ]}>{title}</Text>
           <Text style={tailwind`text-sm text-gray-500`}>{time}</Text>
         </View>
 
@@ -35,7 +41,9 @@ const ChatCard: React.FC<ChatItemProps> = ({
         <View style={tailwind`flex-row justify-between items-center mt-1`}>
           <Text
             style={[
-              tailwind`text-base text-gray-600 flex-1`,
+              [tailwind`text-base text-gray-600 flex-1`,
+                isDarkMode? tailwind`text-[#eee]`:tailwind`text-text-gray-600`
+              ],
               isTyping && tailwind`text-[#FEA928] italic`,
             ]}
             numberOfLines={1}

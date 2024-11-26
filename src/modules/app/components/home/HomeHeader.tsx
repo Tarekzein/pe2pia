@@ -2,10 +2,17 @@ import React from 'react';
 import { View, Text, Image } from 'react-native';
 import tailwind from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather';
+import { useTheme } from '../../../../context/ThemeContext';
 
 const HomeHeader: React.FC = () => {
+  const { theme } = useTheme();
+  const isDarkMode = theme === 'dark';
+  const backgroundColor = isDarkMode ? tailwind`bg-gray-800`.backgroundColor : '#FFF8EC';
+
   return (
-    <View style={tailwind`bg-[#FFF8EC] p-4 rounded-lg`}>
+    <View style={[tailwind`p-4`,{
+      backgroundColor
+    }]}>
       {/* Top Section with Logo */}
       <View style={[tailwind`flex flex-row items-center`]}>
         <Text style={tailwind`text-[2.5rem] font-bold text-[#FEA928]`}>Pe</Text>
@@ -20,7 +27,9 @@ const HomeHeader: React.FC = () => {
       {/* Input and Icon Row */}
       <View style={tailwind`flex-row items-center mt-2`}>
         <View style={tailwind`w-10 h-10 bg-gray-300 rounded-full`} />
-        <Text style={tailwind`text-[#00347D] ml-4 text-base`}>What do you have to share?</Text>
+        <Text style={[tailwind`ml-4 text-base`,
+          isDarkMode ? tailwind`text-[#FEA928]` : tailwind`text-[#00347D]`
+        ]}>What do you have to share?</Text>
         <View style={tailwind`ml-auto w-8 h-8 rounded-full flex items-center justify-center`}>
           <Icon name={ 'image' } size={30} color={'#FEA928'} />
         </View>

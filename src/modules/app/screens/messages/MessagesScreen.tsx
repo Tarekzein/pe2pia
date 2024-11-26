@@ -3,6 +3,7 @@ import { View, ScrollView, TouchableOpacity, Text, Animated, Dimensions } from '
 import tailwind from 'twrnc';
 import ChatCard from '../../components/messages/ChatCard.tsx'; // Assuming the ChatCard component is separate
 import Icon from 'react-native-vector-icons/Feather';
+import {useTheme} from '../../../../context/ThemeContext';
 
 const tabs = ['All chats', 'Groups', 'Requests'];
 const screenWidth = Dimensions.get('window').width;
@@ -16,6 +17,8 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
   const fadeAnim = useRef(new Animated.Value(1)).current; // For fading effect
   const translateX = useRef(new Animated.Value(0)).current; // For sliding effect
   const currentTabIndex = tabs.indexOf(activeTab);
+  const { theme } = useTheme();
+  const isDarkMode = theme === 'dark';
 
   const chats = [
     {
@@ -88,10 +91,12 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
   };
 
   return (
-    <View style={tailwind`flex-1 bg-[#FFF8EC]`}>
+    <View style={[tailwind`flex-1 `,isDarkMode? tailwind`bg-gray-800`:tailwind`bg-[#FFF8EC]`]}>
       {/* Header */}
       <View style={tailwind`flex-row justify-between items-center mt-5 mx-5`}>
-        <Icon name="arrow-left" size={30} color="#00347D" onPress={() => navigation.goBack()} />
+        <Icon name="arrow-left" size={30}  style={
+          isDarkMode? tailwind`text-white`:tailwind`text-[#00347D]`
+        } onPress={() => navigation.goBack()} />
         <View style={tailwind`flex-row items-center`}>
           <Icon name="edit" style={tailwind`mr-7`} size={25} color="#FEA928" />
           <Icon name="search" size={25} color="#FEA928" />
@@ -105,7 +110,7 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
             key={tab}
             style={[
               tailwind`px-4 py-2 rounded-full`,
-              activeTab === tab && tailwind`bg-[#00347D]`,
+              activeTab === tab && (isDarkMode? tailwind`bg-gray-700` : tailwind`bg-[#00347D]`),
             ]}
             onPress={() => handleTabChange(tab)}
           >
@@ -137,6 +142,7 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
               time={chat.time}
               isTyping={chat.isTyping}
               unreadCount={chat.unreadCount}
+              isDarkMode={isDarkMode}
               onPress={() => navigation.navigate('Chat', { title: chat.title })}
             />
           ))}

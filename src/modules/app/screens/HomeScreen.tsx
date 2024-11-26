@@ -3,8 +3,12 @@ import { View, ScrollView } from 'react-native';
 import tailwind from 'twrnc';
 import HomeHeader from '../components/home/HomeHeader';
 import Card from '../components/home/Card';
+import { useTheme } from '../../../context/ThemeContext';
 
 const HomeScreen: React.FC = () => {
+
+  const { theme } = useTheme();
+  const isDarkMode = theme === 'dark';
   const posts = [
     {
       username: 'Username 1',
@@ -27,18 +31,22 @@ const HomeScreen: React.FC = () => {
   ];
 
   return (
-    <View style={tailwind`flex-1  dark:bg-gray-900`}>
+    <View style={[tailwind`flex-1 `,isDarkMode? tailwind`bg-gray-900`:'']}>
       {/* Header */}
       <HomeHeader />
 
       {/* Sticky Navigation Bar */}
       <View
-        style={tailwind`flex-row bg-[#FFF8EC] dark:bg-gray-800 p-4 justify-between items-center shadow-md sticky top-0 z-10`}
+        style={[tailwind`flex-row p-4 justify-between items-center shadow-md sticky top-0 z-10`,
+          isDarkMode ? tailwind`bg-gray-800` : tailwind`bg-[#FFF8EC]`
+        ]}
       >
         {[...Array(6)].map((_, index) => (
           <View
             key={index}
-            style={tailwind`w-10 h-10 bg-gray-300 dark:bg-gray-700 rounded-full`}
+            style={[tailwind`w-10 h-10 rounded-full`,
+              isDarkMode ? tailwind`bg-gray-700` : tailwind`bg-gray-300`
+            ]}
           />
         ))}
       </View>
