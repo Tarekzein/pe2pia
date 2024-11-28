@@ -1,4 +1,8 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+  import { toggleTheme } from '../modules/app/stores/themeSlice'; // Update the import path as needed
+import { RootState } from '../modules/store'; // Update the path for your Redux store's RootState
+
 type Theme = 'light' | 'dark';
 
 interface ThemeContextProps {
@@ -9,14 +13,15 @@ interface ThemeContextProps {
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>('light');
+  const dispatch = useDispatch();
+  const theme = useSelector((state: RootState) => state.theme.theme);
 
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+  const handleToggleTheme = () => {
+    dispatch(toggleTheme());
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme: handleToggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

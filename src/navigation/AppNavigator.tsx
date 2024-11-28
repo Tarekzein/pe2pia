@@ -5,7 +5,7 @@ import { StatusBar } from 'react-native';
 import AuthNavigator from '../modules/auth/navigation/AuthNavigator';
 import MainNavigator from '../modules/app/navigation/MainNavigator';
 import WelcomeNavigator from '../modules/welcome/navigation/WelcomeNavigator';
-import { useAuth } from '../hooks/AuthProvider';
+import { useAuth } from '../context/AuthContext.tsx';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 

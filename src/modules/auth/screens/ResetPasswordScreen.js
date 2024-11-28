@@ -9,7 +9,7 @@ import TextInput from '../components/TextInput';
 import BackButton from '../components/BackButton';
 import { theme } from '../../../core/theme';
 import { passwordValidator } from '../helpers/passwordValidator';
-import { useAuth } from '../../../hooks/AuthProvider';
+import { useAuth } from '../../../context/AuthContext';
 
 export default function ResetPasswordScreen({ navigation }) {
   const [password, setPassword] = useState({ value: '', error: '' });

@@ -10,8 +10,8 @@ import {
   selectIsAuthenticated,
   selectAuthError,
   selectForgotPasswordEmail,
-} from '../modules/auth/stores/authSlice';
-import { AppDispatch } from '../modules/store';
+} from '../modules/auth/stores/authSlice.ts';
+import { AppDispatch } from '../modules/store.ts';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -60,7 +60,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch(resetPassword({ email, password, password_confirmation }));
   }
   return (
-    <AuthContext.Provider value={{ 
+    <AuthContext.Provider value={{
       isAuthenticated,
       login: handleLogin,
       register:handleRegister,

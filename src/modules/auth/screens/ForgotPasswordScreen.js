@@ -6,7 +6,7 @@ import Header from '../components/Header'
 import TextInput from '../components/TextInput'
 import Button from '../components/Button'
 import { emailValidator } from '../helpers/emailValidator'
-import {useAuth} from '../../../hooks/AuthProvider';
+import {useAuth} from '../../../context/AuthContext';
 
 export default function ForgotPasswordScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' })

@@ -5,7 +5,7 @@ import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import { emailValidator } from '../helpers/emailValidator';
 import { passwordValidator } from '../helpers/passwordValidator';
-import {useAuth} from '../../../hooks/AuthProvider';
+import {useAuth} from '../../../context/AuthContext';
 import tailwind from 'twrnc';
 import Animated, {Easing, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
