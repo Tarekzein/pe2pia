@@ -1,23 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import {TouchableOpacity, StyleSheet, View, Image} from 'react-native';
 import { Text } from 'react-native-paper';
-import Background from '../components/Background';
-import Logo from '../components/Logo';
-import Header from '../components/Header';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import BackButton from '../components/BackButton';
-import { theme } from '../../../core/theme';
 import { emailValidator } from '../helpers/emailValidator';
 import { passwordValidator } from '../helpers/passwordValidator';
-import {useAuth} from '../../../hooks/AuthProvider';
+import {useAuth} from '../../../context/AuthContext';
 import tailwind from 'twrnc';
 import Animated, {Easing, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
-import Icon from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState({ value: '', error: '' })
-  const [password, setPassword] = useState({ value: '', error: '' })
+  const [email, setEmail] = useState({ value: '', error: '' });
+  const [password, setPassword] = useState({ value: '', error: '' });
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const {login} = useAuth(login);
   const pattern1Position = useSharedValue(100);
   const pattern2Position = useSharedValue(-100);
@@ -67,14 +63,15 @@ export default function LoginScreen({ navigation }) {
   }));
 
   const onLoginPressed = () => {
-    const emailError = emailValidator(email.value)
-    const passwordError = passwordValidator(password.value)
-    if (emailError || passwordError) {
-      setEmail({ ...email, error: emailError });
-      setPassword({ ...password, error: passwordError });
-      return;
-    }
-    // login(email.value, password.value);
+    // navigation.navigate('MainNavigator', { screen: 'HomeScreen' });
+    // const emailError = emailValidator(email.value)
+    // const passwordError = passwordValidator(password.value)
+    // if (emailError || passwordError) {
+    //   setEmail({ ...email, error: emailError });
+    //   setPassword({ ...password, error: passwordError });
+    //   return;
+    // }
+    login(email.value, password.value);
   }
 
   return (
@@ -127,28 +124,63 @@ export default function LoginScreen({ navigation }) {
           </Text>
         </Animated.View>
       </Animated.View>
+
       <View style={tailwind`w-full`}>
-        <TextInput
-          label="Email"
-          returnKeyType="next"
-          value={email.value}
-          onChangeText={(text) => setEmail({ value: text, error: '' })}
-          error={!!email.error}
-          errorText={email.error}
-          autoCapitalize="none"
-          autoCompleteType="email"
-          textContentType="emailAddress"
-          keyboardType="email-address"
-        />
-        <TextInput
-          label="Password"
-          returnKeyType="done"
-          value={password.value}
-          onChangeText={(text) => setPassword({ value: text, error: '' })}
-          error={!!password.error}
-          errorText={password.error}
-          secureTextEntry
-        />
+        {/* Email Input */}
+        <View style={tailwind`relative `}>
+          {/* Email Icon */}
+          <Icon
+            name="email"
+            size={20}
+            color="#888"
+            style={tailwind`absolute z-2 inset-y-0 left-5 top-9 flex items-center`}
+          />
+          <TextInput
+            placeholder="Email"
+            style={tailwind`bg-gray-50   text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5`}
+            value={email.value}
+            onChangeText={(text) => setEmail({ value: text, error: '' })}
+            autoCapitalize="none"
+            autoCompleteType="email"
+            textContentType="emailAddress"
+            keyboardType="email-address"
+            errorText={email.error}
+            outlineStyle={tailwind`border rounded-xl `}
+          />
+
+        </View>
+
+        {/* Password Input */}
+        <View style={tailwind`relative mb-4`}>
+          {/* Password Fi eld Container */}
+          <View style={tailwind`flex flex-row items-center`}>
+            <View style={tailwind`absolute z-2 inset-y-0 left-5 top-9 flex items-center`}>
+              <Icon name="lock" size={20} color="#888" />
+            </View>
+            <TextInput
+              placeholder="Enter your password"
+              style={tailwind`bg-gray-50   text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5`}
+              value={password.value}
+              onChangeText={(text) => setPassword({ value: text, error: '' })}
+              secureTextEntry={!passwordVisible}
+              errorText={password.error}
+              outlineStyle={tailwind`border rounded-xl `}
+
+            />
+            {/* Toggle Visibility Icon */}
+            <TouchableOpacity
+              onPress={() => setPasswordVisible(!passwordVisible)}
+              style={tailwind`absolute z-2 inset-y-0 right-5 top-9 flex items-center`}
+            >
+              <Icon
+                name={passwordVisible ? 'eye' : 'eye-off'}
+                size={20}
+                color="#888"
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+
         <View style={styles.forgotPassword}>
           <TouchableOpacity
             onPress={() => navigation.navigate('ForgotPasswordScreen')}
@@ -184,8 +216,8 @@ export default function LoginScreen({ navigation }) {
           style={tailwind`bg-[#eee]`}
           onPress={onLoginPressed}
         >
-          <View style={tailwind`flex-row items-center justify-between space-x-4`}>
-            <Image source={require('../assets/google.png')} style={tailwind`w-6 h-6 mr-5`} />
+          <View style={tailwind`flex-row items-center w-full justify-evenly space-x-4`}>
+            <Image source={require('../assets/google.png')} style={tailwind`w-6 h-6`} />
             <Text style={tailwind`text-[#00347D]  text-lg font-bold`}>Continue with Google</Text>
           </View>
         </Button>
@@ -196,15 +228,15 @@ export default function LoginScreen({ navigation }) {
           style={tailwind`bg-[#eee]`}
           onPress={onLoginPressed}
         >
-          <View style={tailwind`flex-row items-center justify-between space-x-4`}>
-            <Image source={require('../assets/facebook.png')} style={tailwind`w-6 h-6 mr-5`} />
+          <View style={tailwind`flex-row w-full items-center justify-evenly space-x-4`}>
+            <Image source={require('../assets/facebook.png')} style={tailwind`w-6 h-6 `} />
             <Text style={tailwind`text-[#00347D] text-lg font-bold`}>Continue with Facebook</Text>
           </View>
         </Button>
 
       </View>
 
-      <View style={tailwind`flex-row`}>
+      <View style={tailwind`flex-row mb-5`}>
         <Text style={tailwind`text-white text-lg`}>Don’t have an account? </Text>
         <TouchableOpacity onPress={() => navigation.replace('RegisterScreen')}>
           <Text style={tailwind`text-white text-lg font-bold text-[#00347D]`}>Sign up!</Text>
@@ -227,10 +259,8 @@ const styles = StyleSheet.create({
   },
   forgot: {
     fontSize: 13,
-    color: theme.colors.secondary,
   },
   link: {
     fontWeight: 'bold',
-    color: theme.colors.primary,
   },
 })

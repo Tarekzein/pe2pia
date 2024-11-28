@@ -8,7 +8,7 @@ import BackButton from '../components/BackButton';
 import Logo from '../components/Logo';
 import Header from '../components/Header';
 import Button from '../components/Button';
-import { useAuth } from '../../../hooks/AuthProvider';
+import { useAuth } from '../../../context/AuthContext';
 import { otpValidator } from '../helpers/otpValidator';
 
 export default function OtpScreen({ navigation }) {
