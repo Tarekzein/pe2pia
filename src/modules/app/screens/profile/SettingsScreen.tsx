@@ -46,7 +46,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         </TouchableOpacity>
 
         {/* Option 2: Languages */}
-        <TouchableOpacity style={tailwind`flex-row items-center py-4`}>
+        <TouchableOpacity onPress={() => navigation.navigate('Language')}
+          style={tailwind`flex-row items-center py-4`}>
           <Ionicons name="language-sharp" size={30} color={isDarkMode ? "#FEA928" : "#00347D"} />
           <Text
             style={isDarkMode ? tailwind`ml-4 text-xl font-bold text-[#eee]` : tailwind`ml-4 text-xl font-bold text-[#FEA928]`}

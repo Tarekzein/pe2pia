@@ -2,11 +2,11 @@ import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';  // Change to Material Top Tab
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import HomeScreen from '../screens/HomeScreen';
 import SearchScreen from '../screens/SearchScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import MessagesNavigator from './MessagesNavigator';
 import ProfileNavigator from './ProfileNavigator';
+import HomeNavigator from './HomeNavigator';
 import tailwind from 'twrnc';
 import { View } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
@@ -47,7 +47,7 @@ const MainNavigator: React.FC = () => {
     >
       <Tab.Screen
         name="HomeScreen"
-        component={HomeScreen}
+        component={HomeNavigator}
         options={{
           tabBarIcon: ({ color, focused }) => (
             <View style={tailwind`flex justify-center items-center`}>

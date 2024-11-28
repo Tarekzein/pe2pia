@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import tailwind from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather';
 import { useTheme } from '../../../../context/ThemeContext';
@@ -27,11 +27,15 @@ const HomeHeader: React.FC = () => {
       {/* Input and Icon Row */}
       <View style={tailwind`flex-row items-center mt-2`}>
         <View style={tailwind`w-10 h-10 bg-gray-300 rounded-full`} />
-        <Text style={[tailwind`ml-4 text-base`,
-          isDarkMode ? tailwind`text-[#FEA928]` : tailwind`text-[#00347D]`
-        ]}>What do you have to share?</Text>
+          <TouchableOpacity>
+            <Text style={[tailwind`ml-4 text-base`,
+              isDarkMode ? tailwind`text-gray-300` : tailwind`text-[#00347D]`
+            ]}>What do you have to share?</Text>
+          </TouchableOpacity>
         <View style={tailwind`ml-auto w-8 h-8 rounded-full flex items-center justify-center`}>
-          <Icon name={ 'image' } size={30} color={'#FEA928'} />
+          <TouchableOpacity>
+            <Icon name={ 'image' } size={30} color={'#FEA928'} />
+          </TouchableOpacity>
         </View>
       </View>
     </View>

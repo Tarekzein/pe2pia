@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import tailwind from 'twrnc';
-import HomeHeader from '../components/home/HomeHeader';
-import Card from '../components/home/Card';
-import { useTheme } from '../../../context/ThemeContext';
+import HomeHeader from '../../components/home/HomeHeader.tsx';
+import Card from '../../components/home/Card.tsx';
+import { useTheme } from '../../../../context/ThemeContext.tsx';
 
 const HomeScreen: React.FC = () => {
 
