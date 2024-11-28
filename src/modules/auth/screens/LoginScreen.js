@@ -63,7 +63,7 @@ export default function LoginScreen({ navigation }) {
   }));
 
   const onLoginPressed = () => {
-    navigation.navigate('MainNavigator', { screen: 'HomeScreen' });
+    // navigation.navigate('MainNavigator', { screen: 'HomeScreen' });
     // const emailError = emailValidator(email.value)
     // const passwordError = passwordValidator(password.value)
     // if (emailError || passwordError) {
@@ -71,7 +71,7 @@ export default function LoginScreen({ navigation }) {
     //   setPassword({ ...password, error: passwordError });
     //   return;
     // }
-    // login(email.value, password.value);
+    login(email.value, password.value);
   }
 
   return (
@@ -137,7 +137,7 @@ export default function LoginScreen({ navigation }) {
           />
           <TextInput
             placeholder="Email"
-            style={tailwind`bg-gray-50 border rounded-xl border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+            style={tailwind`bg-gray-50   text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5`}
             value={email.value}
             onChangeText={(text) => setEmail({ value: text, error: '' })}
             autoCapitalize="none"
@@ -145,6 +145,7 @@ export default function LoginScreen({ navigation }) {
             textContentType="emailAddress"
             keyboardType="email-address"
             errorText={email.error}
+            outlineStyle={tailwind`border rounded-xl `}
           />
 
         </View>
@@ -158,11 +159,13 @@ export default function LoginScreen({ navigation }) {
             </View>
             <TextInput
               placeholder="Enter your password"
-              style={tailwind`bg-gray-50 border rounded-xl border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+              style={tailwind`bg-gray-50   text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5`}
               value={password.value}
               onChangeText={(text) => setPassword({ value: text, error: '' })}
               secureTextEntry={!passwordVisible}
               errorText={password.error}
+              outlineStyle={tailwind`border rounded-xl `}
+
             />
             {/* Toggle Visibility Icon */}
             <TouchableOpacity

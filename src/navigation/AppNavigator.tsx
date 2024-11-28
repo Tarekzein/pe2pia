@@ -22,17 +22,17 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/*{isAuthenticated ? (*/}
-        {/*  <Stack.Screen name="MainNavigator" component={MainNavigator} />*/}
-        {/*) : (*/}
-        {/*  <>*/}
-        {/*    <Stack.Screen name="WelcomeNavigator" component={WelcomeNavigator} />*/}
-        {/*    <Stack.Screen name="AuthNavigator" component={AuthNavigator} />*/}
-        {/*  </>*/}
-        {/*)}*/}
+        {isAuthenticated ? (
+          <Stack.Screen name="MainNavigator" component={MainNavigator} />
+        ) : (
+          <>
+            <Stack.Screen name="WelcomeNavigator" component={WelcomeNavigator} />
+            <Stack.Screen name="AuthNavigator" component={AuthNavigator} />
+          </>
+        )}
         {/*<Stack.Screen name="WelcomeNavigator" component={WelcomeNavigator} />*/}
         {/*<Stack.Screen name="AuthNavigator" component={AuthNavigator} />*/}
-        <Stack.Screen name="MainNavigator" component={MainNavigator} />
+        {/*<Stack.Screen name="MainNavigator" component={MainNavigator} />*/}
 
       </Stack.Navigator>
     </NavigationContainer>

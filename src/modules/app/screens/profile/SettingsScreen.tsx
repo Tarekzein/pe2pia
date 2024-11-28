@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Switch } from 'react-native';
 import tailwind from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontIcons from 'react-native-vector-icons/FontAwesome5';
 import { useTheme } from '../../../../context/ThemeContext';
 
 interface SettingsScreenProps {
@@ -35,9 +37,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       <View style={tailwind`mt-10 mx-6`}>
         {/* Option 1: Edit Profile */}
         <TouchableOpacity style={tailwind`flex-row items-center py-4`}>
-          <Icon name="user" size={30} color={isDarkMode ? "#FEA928" : "#00347D"} />
+          <FontIcons name="user-circle" size={30} color={isDarkMode ? "#FEA928" : "#00347D"} />
           <Text
-            style={isDarkMode ? tailwind`ml-4 text-xl font-bold text-[#FEA928]` : tailwind`ml-4 text-xl font-bold text-[#FEA928]`}
+            style={isDarkMode ? tailwind`ml-4 text-xl font-bold text-[#eee]` : tailwind`ml-4 text-xl font-bold text-[#FEA928]`}
           >
             Edit Profile
           </Text>
@@ -45,9 +47,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
 
         {/* Option 2: Languages */}
         <TouchableOpacity style={tailwind`flex-row items-center py-4`}>
-          <Icon name="globe" size={30} color={isDarkMode ? "#FEA928" : "#00347D"} />
+          <Ionicons name="language-sharp" size={30} color={isDarkMode ? "#FEA928" : "#00347D"} />
           <Text
-            style={isDarkMode ? tailwind`ml-4 text-xl font-bold text-[#FEA928]` : tailwind`ml-4 text-xl font-bold text-[#FEA928]`}
+            style={isDarkMode ? tailwind`ml-4 text-xl font-bold text-[#eee]` : tailwind`ml-4 text-xl font-bold text-[#FEA928]`}
           >
             Languages
           </Text>
@@ -57,7 +59,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         <TouchableOpacity style={tailwind`flex-row items-center py-4`}>
           <Icon name="bell" size={30} color={isDarkMode ? "#FEA928" : "#00347D"} />
           <Text
-            style={isDarkMode ? tailwind`ml-4 text-xl font-bold text-[#FEA928]` : tailwind`ml-4 text-xl font-bold text-[#FEA928]`}
+            style={isDarkMode ? tailwind`ml-4 text-xl font-bold text-[#eee]` : tailwind`ml-4 text-xl font-bold text-[#FEA928]`}
           >
             Notifications
           </Text>
@@ -67,7 +69,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         <TouchableOpacity style={tailwind`flex-row items-center py-4`}>
           <Icon name="help-circle" size={30} color={isDarkMode ? "#FEA928" : "#00347D"} />
           <Text
-            style={isDarkMode ? tailwind`ml-4 text-xl font-bold text-[#FEA928]` : tailwind`ml-4 text-xl font-bold text-[#FEA928]`}
+            style={isDarkMode ? tailwind`ml-4 text-xl font-bold text-[#eee]` : tailwind`ml-4 text-xl font-bold text-[#FEA928]`}
           >
             Help & Support
           </Text>
@@ -77,7 +79,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         <View style={tailwind`flex-row items-center py-4`}>
           <Icon name="moon" size={30} color={isDarkMode ? "#FEA928" : "#00347D"} />
           <Text
-            style={isDarkMode ? tailwind`ml-4 text-xl font-bold text-[#FEA928]` : tailwind`ml-4 text-xl font-bold text-[#FEA928]`}
+            style={isDarkMode ? tailwind`ml-4 text-xl font-bold text-[#eee]` : tailwind`ml-4 text-xl font-bold text-[#FEA928]`}
           >
             Dark Mode
           </Text>
@@ -94,7 +96,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         <TouchableOpacity style={tailwind`flex-row items-center py-4`}>
           <Icon name="log-out" size={30} color={isDarkMode ? "#FEA928" : "#00347D"} />
           <Text
-            style={isDarkMode ? tailwind`ml-4 text-xl font-bold text-[#FEA928]` : tailwind`ml-4 text-xl font-bold text-[#FEA928]`}
+            style={isDarkMode ? tailwind`ml-4 text-xl font-bold text-[#eee]` : tailwind`ml-4 text-xl font-bold text-[#FEA928]`}
           >
             Log Out
           </Text>

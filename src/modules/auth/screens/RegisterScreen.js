@@ -122,8 +122,8 @@ export default function RegisterScreen({ navigation }) {
           </View>
           <TextInput
             placeholder="Name"
-            style={tailwind`bg-gray-50 border rounded-xl border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-            value={name.value}
+            style={tailwind`bg-gray-50 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5`}
+            outlineStyle={tailwind`border rounded-xl `}            value={name.value}
             onChangeText={(text) => setName({ value: text, error: '' })}
             errorText={name.error}
           />
@@ -136,8 +136,8 @@ export default function RegisterScreen({ navigation }) {
           </View>
           <TextInput
             placeholder="Email"
-            style={tailwind`bg-gray-50 border rounded-xl border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-            value={email.value}
+            style={tailwind`bg-gray-50 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5`}
+            outlineStyle={tailwind`border rounded-xl `}            value={email.value}
             onChangeText={(text) => setEmail({ value: text, error: '' })}
             autoCapitalize="none"
             autoCompleteType="email"
@@ -154,7 +154,8 @@ export default function RegisterScreen({ navigation }) {
           </View>
           <TextInput
             placeholder="Password"
-            style={tailwind`bg-gray-50 border rounded-xl border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+            style={tailwind`bg-gray-50 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5`}
+            outlineStyle={tailwind`border rounded-xl `}
             value={password.value}
             onChangeText={(text) => setPassword({ value: text, error: '' })}
             secureTextEntry={!passwordVisible}
@@ -179,8 +180,8 @@ export default function RegisterScreen({ navigation }) {
           </View>
           <TextInput
             placeholder="Confirm Password"
-            style={tailwind`bg-gray-50 border rounded-xl border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-            value={confirmPassword.value}
+            style={tailwind`bg-gray-50 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5`}
+            outlineStyle={tailwind`border rounded-xl `}            value={confirmPassword.value}
             onChangeText={(text) => setConfirmPassword({ value: text, error: '' })}
             secureTextEntry
             errorText={confirmPassword.error}

@@ -27,7 +27,19 @@ export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      const data = await authService.login(email, password);
+      // const data = await authService.login(email, password);
+      const data = [
+        {
+          user: {
+            name: 'John Doe',
+            email: '',
+            phone: '',
+          },
+        },
+        {
+          token: 'token',
+        },
+      ];
       return data; // Return data for fulfilled case
     } catch (error: any) {
       console.log('login error: ', error.message);
