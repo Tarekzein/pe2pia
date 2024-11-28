@@ -54,7 +54,7 @@ const HomeScreen: React.FC = () => {
       {/* Content */}
       <ScrollView
         style={tailwind`flex-1`}
-        contentContainerStyle={tailwind`py-4`}
+        contentContainerStyle={tailwind`py-4 px-2`}
         showsVerticalScrollIndicator={false}
       >
         {/* Posts */}

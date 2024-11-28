@@ -12,10 +12,11 @@ interface NotificationCardProps {
     type: string;
     date: string;
     avatar: string; // URL for the avatar image
-  };
+  },
+  isDarkMode?: boolean,
 }
 
-const NotificationCard: React.FC<NotificationCardProps> = ({ notification }) => {
+const NotificationCard: React.FC<NotificationCardProps> = ({ notification,isDarkMode }) => {
   const getIcon = (type: string) => {
     switch (type) {
       case 'success':
@@ -35,17 +36,25 @@ const NotificationCard: React.FC<NotificationCardProps> = ({ notification }) => 
 
   return (
     <LinearGradient
-      colors={['rgba(254, 169, 40, 0.24)', 'rgba(254, 169, 40, 0.16)']} // Gradient colors
+      colors={['rgba(254, 203, 125, 0.16)', 'rgba(254, 203, 125, 0.08)']}
       start={{ x: 0, y: 0 }} // Gradient start point
       end={{ x: 1, y: 0 }} // Gradient end point
-      style={tailwind`m-4 rounded-xl`}> {/* Gradient background applied here */}
+      style={[
+        tailwind`m-4 rounded-xl`,
+        isDarkMode ? tailwind`bg-gray-700 border-gray-700`
+          :
+          tailwind`border-gray-200`
+      ]}
+    > {/* Gradient background applied here */}
 
       <Card.Content style={tailwind`py-3`}>
         <Card.Title
           title={notification.title}
           subtitle={notification.date}
-          titleStyle={tailwind`text-[#00347D] dark:text-gray-300`}
-          subtitleStyle={tailwind`text-right text-sm dark:text-gray-300`}
+          titleStyle={isDarkMode ? tailwind`text-white` : tailwind`text-[#00347D]`}
+          subtitleStyle={[tailwind`text-right text-sm`,
+            isDarkMode ? tailwind`text-gray-300` : tailwind`text-[#00347D]`
+          ]}
           left={() => (
             <View style={tailwind`relative`}>
               {/* Avatar Image */}

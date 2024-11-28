@@ -33,7 +33,7 @@ const Card: React.FC<CardProps> = ({
   const borderColor = isDarkMode ? '#eeeeee54' : '#D1D5DB'; // Tailwind's gray-300
 
   return (
-    <View style={[tailwind`mb-4 rounded-xl p-4`, { backgroundColor }]}>
+    <View style={[tailwind`mb-2 rounded-xl p-4`, { backgroundColor }]}>
       {/* User Info */}
       <View style={tailwind`flex-row justify-between items-center`}>
         <View style={tailwind`flex-row`}>
