@@ -50,17 +50,11 @@ export default function LoginScreen({ navigation }) {
   const pattern2Style = useAnimatedStyle(() => ({
     transform: [{ translateX: pattern2Position.value }],
   }));
-  const websiteStyle = useAnimatedStyle(() => ({
-    opacity: websiteOpacity.value,
-  }));
 
   const textStyle = useAnimatedStyle(() => ({
     opacity: textOpacity.value,
   }));
 
-  const buttonStyle = useAnimatedStyle(() => ({
-    opacity: buttonOpacity.value,
-  }));
 
   const onLoginPressed = () => {
     // navigation.navigate('MainNavigator', { screen: 'HomeScreen' });

@@ -79,8 +79,8 @@ export const forgotPassword = createAsyncThunk(
   'auth/forgotPassword',
   async ({ email }: { email: string }, { rejectWithValue }) => {
     try {
-      const data = await authService.forgotPassword(email);
-      return data; // Return data for fulfilled case
+      // const data = await authService.forgotPassword(email);
+      // return data; // Return data for fulfilled case
     } catch (error: any) {
       console.log('forgotPassword error: ', error.message);
       return rejectWithValue(error.message); // Handle errors by rejecting with a value
@@ -92,8 +92,8 @@ export const verifyOtp = createAsyncThunk(
   'auth/confirmOtp',
   async ({ email, otp }: { email: string; otp: string }, { rejectWithValue }) => {
     try {
-      const data = await authService.verifyOtp(email, otp);
-      return data; // Return data for fulfilled case
+      // const data = await authService.verifyOtp(email, otp);
+      // return data; // Return data for fulfilled case
     } catch (error: any) {
       console.log('confirmOtp error: ', error.message);
       return rejectWithValue(error.message); // Handle errors by rejecting with a value
