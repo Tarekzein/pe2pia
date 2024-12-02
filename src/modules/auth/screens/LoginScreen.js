@@ -9,6 +9,7 @@ import {useAuth} from '../../../context/AuthContext';
 import tailwind from 'twrnc';
 import Animated, {Easing, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Toast from 'react-native-toast-message';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' });
@@ -66,7 +67,13 @@ export default function LoginScreen({ navigation }) {
     }
     login(email.value, password.value);
     if(error){
-      console.log('error from screen',error);
+      Toast.show({
+        type: 'error',
+        text1: 'Login Error',
+        text2: error?.Message,
+        visibilityTime: 4000,
+        autoHide: true,
+      })
     }
   }
 

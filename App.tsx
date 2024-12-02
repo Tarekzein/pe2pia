@@ -5,7 +5,7 @@ import AppNavigator from './src/navigation/AppNavigator';
 import { AuthProvider } from './src/context/AuthContext';
 import { ThemeProvider } from './src/context/ThemeContext'; // Adjust the path as necessary
 import store, { persistor } from './src/modules/store';
-import './global.css';
+import Toast from 'react-native-toast-message';
 
 const App: React.FC = () => {
   return (
@@ -14,6 +14,7 @@ const App: React.FC = () => {
         <ThemeProvider>
           <AuthProvider>
             <AppNavigator />
+            <Toast  />
           </AuthProvider>
         </ThemeProvider>
       </PersistGate>
