@@ -175,9 +175,11 @@ export default function ResetPasswordScreen({ navigation }) {
         style={tailwind`bg-[#00347D] text-[#FEA928] text-xl mt-4`}
         onPress={onResetPasswordPressed}
       >
-        Reset Password
+          <Text style={tailwind`text-xl text-[#FEA928] font-bold`}>
+              Reset Password
+          </Text>
       </Button>
-      <View style={styles.row}>
+      <View style={tailwind`flex-row`}>
         <Text style={tailwind`text-white font-bold`}>Remembered your password? </Text>
         <TouchableOpacity onPress={() => navigation.replace('LoginScreen')}>
           <Text style={tailwind`font-bold text-[#00347D]`}>Login</Text>

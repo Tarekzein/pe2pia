@@ -189,7 +189,9 @@ export default function OtpScreen({ navigation }) {
         onPress={handleConfirmOtp}
         style={tailwind`bg-[#00347D] text-[#FEA928] text-xl mt-4`}
       >
-        Confirm OTP
+        <Text style={tailwind`text-xl text-[#FEA928] font-bold`}>
+          Confirm OTP
+        </Text>
       </Button>
 
       <TouchableOpacity
