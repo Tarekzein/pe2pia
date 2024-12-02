@@ -9,19 +9,20 @@ import {
   resetPassword,
   selectIsAuthenticated,
   selectAuthError,
-  selectForgotPasswordEmail,
+  selectForgotPasswordEmail, selectAuthLoading,
 } from '../modules/auth/stores/authSlice.ts';
 import { AppDispatch } from '../modules/store.ts';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => void;
-  register: (email: string,name:string, password: string) => void;
+  register: (email: string, firstName: string, lastName: string, password: string) => void;
   logout: () => void;
   forgotPassword: (email: string) => void;
   verifyOtp: (email: string, otp: string) => void;
   resetPassword: (email: string, password: string, password_confirmation: string) => void;
   error: string | null;
+  loading: boolean;
   forgotPasswordEmail: string | null;
 }
 
@@ -35,14 +36,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>();
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const error = useSelector(selectAuthError);
+  const loading = useSelector(selectAuthLoading);
   const forgotPasswordEmail = useSelector(selectForgotPasswordEmail);
 
   const handleLogin = (email: string, password: string) => {
     dispatch(login({ email, password }));
   };
 
-  const handleRegister = (email: string, name: string, password: string) => {
-    dispatch(register({ email, name, password }));
+  const handleRegister = (email: string, firstName: string, lastName: string, password: string) => {
+    dispatch(register({ email, firstName,lastName , password }));
   };
 
   const handleLogout = () => {
@@ -69,6 +71,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       verifyOtp: handleVerifyOtp,
       resetPassword: handleResetPassword,
       error,
+      loading,
       forgotPasswordEmail,
     }}>
       {children}

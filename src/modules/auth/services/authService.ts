@@ -2,22 +2,44 @@ import apiClient from '../../../services/apiClient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const authService = {
-  login: async (email: string, password: string) => {
-    try {
-      const response = await apiClient.post('/auth/login', { email, password });
-      // Store the token and user data in localStorage
-      await  AsyncStorage.setItem('token', response.data.token);
-      return response.data;
-    } catch (error: any) {
-      // You could add specific error parsing here if needed
-      console.log('error', error.response?.data?.message);
-      throw new Error(error.response?.data?.message || 'Login failed');
-    }
-  },
-  register: async (email:string, name:string, password:string) => {
-    const response = await apiClient.post('/auth/register', { email,name, password,password_confirmation:password });
+    login: async (email: string, password: string) => {
+      try {
+        const response = await apiClient.post('/users/login', { email, password });
+
+        // Check if the response is valid
+        if (response && response.data && response.data.data) {
+          const token = response.data.data.token;
+
+          // Store the token in AsyncStorage
+          await AsyncStorage.setItem('token', token);
+
+          // Return the extracted user data
+          return response.data.data;
+        }
+
+        throw new Error('Unexpected response structure');
+      } catch (error: any) {
+        // Handle Axios error response
+        if (error.response) {
+          console.error('Server Error:', error.response.data); // Log the server error
+
+          // Throw a specific error message
+          throw error.response.data;
+        } else {
+          // Log unexpected errors (e.g., network issues)
+          console.error('Unexpected Error:', error.message);
+          throw new Error('An unexpected error occurred. Please try again.');
+        }
+      }
+    },
+  register: async (email:string, firstName: string, lastName: string , password:string) => {
+    const response = await apiClient.post('/users/register', {
+     email: email,
+     FirstName: firstName,
+     LastName: lastName,
+     password: password,
+    });
     // Store the token and user data in localStorage
-    await AsyncStorage.setItem('token', response.data.token);
     return response.data;
   },
   logout: async () => {
