@@ -57,25 +57,17 @@ export default function LoginScreen({ navigation }) {
   }));
 
 
-  const onLoginPressed = () => {
-    const emailError = emailValidator(email.value)
-    const passwordError = passwordValidator(password.value)
+  const onLoginPressed =  () => {
+    const emailError = emailValidator(email.value);
+    const passwordError = passwordValidator(password.value);
     if (emailError || passwordError) {
       setEmail({ ...email, error: emailError });
       setPassword({ ...password, error: passwordError });
       return;
     }
-    login(email.value, password.value);
-    if(error){
-      Toast.show({
-        type: 'error',
-        text1: 'Login Error',
-        text2: error?.Message,
-        visibilityTime: 4000,
-        autoHide: true,
-      })
-    }
-  }
+
+   login( email.value, password.value );
+  };
 
   return (
     <View

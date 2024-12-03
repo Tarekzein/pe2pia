@@ -116,6 +116,7 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.isAuthenticated = true;
         state.loading = false;
+        state.error = null;
         state.user = action.payload.id; // Store user data
         state.token = action.payload.token; // Store token
       })

@@ -21,13 +21,11 @@ const authService = {
       } catch (error: any) {
         // Handle Axios error response
         if (error.response) {
-          console.error('Server Error:', error.response.data); // Log the server error
 
           // Throw a specific error message
           throw error.response.data;
         } else {
           // Log unexpected errors (e.g., network issues)
-          console.error('Unexpected Error:', error.message);
           throw new Error('An unexpected error occurred. Please try again.');
         }
       }
