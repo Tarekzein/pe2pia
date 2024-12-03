@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './auth/stores/authSlice';
 import themeReducer from './app/stores/themeSlice';
+import homeReducer from './app/stores/home/homeSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // AsyncStorage for React Native
 import { combineReducers } from 'redux';
@@ -14,8 +15,10 @@ const persistConfig = {
 
 // Combine reducers if you have multiple slices
 const rootReducer = combineReducers({
+  // [authApi.reducerPath]: authApi.reducer,
   auth: authReducer,
   theme: themeReducer,
+  home: homeReducer,
 });
 
 // Create a persisted reducer

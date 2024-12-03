@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {View, TextInput, Text, TouchableOpacity, Image} from 'react-native';
 import tailwind from 'twrnc';
-import OTPInputView from '@twotalltotems/react-native-otp-input'
 import Button from '../components/Button';
 import { useAuth } from '../../../context/AuthContext';
 import { otpValidator } from '../helpers/otpValidator';

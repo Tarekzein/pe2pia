@@ -5,7 +5,7 @@ import authService from '../services/authService';
 interface AuthState {
   isAuthenticated: boolean;
   loading: boolean;
-  error: string | null;
+  error: any;
   user: any; // Define a proper user type if possible
   token:string | null;
   forgotPasswordEmail: string;
@@ -27,32 +27,20 @@ export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      // const data = await authService.login(email, password);
-      const data = [
-        {
-          user: {
-            name: 'John Doe',
-            email: '',
-            phone: '',
-          },
-        },
-        {
-          token: 'token',
-        },
-      ];
+      const data = await authService.login(email, password);
       return data; // Return data for fulfilled case
     } catch (error: any) {
-      console.log('login error: ', error.message);
-      return rejectWithValue(error.message); // Handle errors by rejecting with a value
+      console.log('login error: ', error);
+      return rejectWithValue(error); // Handle errors by rejecting with a value
     }
   }
 );
 
 export const register = createAsyncThunk(
   'auth/register',
-  async ({ email, name, password }: { email: string; password: string; name: string }, { rejectWithValue }) => {
+  async ({ email,firstName, lastName, password }: { email: string; password: string; firstName: string; lastName: string }, { rejectWithValue }) => {
     try {
-      const data = await authService.register(email, name, password);
+      const data = await authService.register(email, firstName,lastName, password);
       return data; // Return data for fulfilled case
     } catch (error: any) {
       console.log('register error: ', error.message);
@@ -79,8 +67,8 @@ export const forgotPassword = createAsyncThunk(
   'auth/forgotPassword',
   async ({ email }: { email: string }, { rejectWithValue }) => {
     try {
-      // const data = await authService.forgotPassword(email);
-      // return data; // Return data for fulfilled case
+      const data = await authService.forgotPassword(email);
+      return data; // Return data for fulfilled case
     } catch (error: any) {
       console.log('forgotPassword error: ', error.message);
       return rejectWithValue(error.message); // Handle errors by rejecting with a value
@@ -92,8 +80,8 @@ export const verifyOtp = createAsyncThunk(
   'auth/confirmOtp',
   async ({ email, otp }: { email: string; otp: string }, { rejectWithValue }) => {
     try {
-      // const data = await authService.verifyOtp(email, otp);
-      // return data; // Return data for fulfilled case
+      const data = await authService.verifyOtp(email, otp);
+      return data; // Return data for fulfilled case
     } catch (error: any) {
       console.log('confirmOtp error: ', error.message);
       return rejectWithValue(error.message); // Handle errors by rejecting with a value
@@ -128,7 +116,8 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         state.isAuthenticated = true;
         state.loading = false;
-        state.user = action.payload.user; // Store user data
+        state.error = null;
+        state.user = action.payload.id; // Store user data
         state.token = action.payload.token; // Store token
       })
       .addCase(login.rejected, (state, action) => {
@@ -140,10 +129,9 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(register.fulfilled, (state, action) => {
-        state.isAuthenticated = true;
+        // state.isAuthenticated = true;
         state.loading = false;
         state.user = action.payload.user; // Store user data
-        state.token = action.payload.token; // Store token
       })
       .addCase(register.rejected, (state, action) => {
         state.loading = false;

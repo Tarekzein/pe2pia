@@ -12,12 +12,13 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from '
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function RegisterScreen({ navigation }) {
-  const [name, setName] = useState({ value: '', error: '' });
+  const [firstName, setFirstName] = useState({ value: '', error: '' });
+  const [lastName, setLastName] = useState({ value: '', error: '' });
   const [email, setEmail] = useState({ value: '', error: '' });
   const [password, setPassword] = useState({ value: '', error: '' });
   const [confirmPassword, setConfirmPassword] = useState({ value: '', error: '' });
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const { register } = useAuth(register);
+  const { register,loading,error } = useAuth();
 
   const pattern1Position = useSharedValue(100);
   const pattern2Position = useSharedValue(-100);
@@ -57,20 +58,26 @@ export default function RegisterScreen({ navigation }) {
   }));
 
   const onSignUpPressed = () => {
-    const nameError = nameValidator(name.value);
+    const firstNameError = nameValidator(firstName.value);
+    const lastNameError = nameValidator(lastName.value);
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
     const confirmPasswordError =
       password.value !== confirmPassword.value ? 'Passwords do not match' : '';
 
-    if (nameError || emailError || passwordError || confirmPasswordError) {
-      setName({ ...name, error: nameError });
+    if (firstNameError || lastNameError || emailError || passwordError || confirmPasswordError) {
+      setFirstName({ ...firstName, error: firstNameError });
+      setLastName({ ...lastName, error: lastNameError });
       setEmail({ ...email, error: emailError });
       setPassword({ ...password, error: passwordError });
       setConfirmPassword({ ...confirmPassword, error: confirmPasswordError });
       return;
     }
-    // register(email.value, name.value, password.value);
+    register(email.value, firstName.value , lastName.value, password.value);
+    if(!error){
+        navigation.replace('LoginScreen');
+        console.log('User Registered');
+    }
   };
 
   return (
@@ -121,14 +128,27 @@ export default function RegisterScreen({ navigation }) {
             <Icon name="account" size={20} color="#888" />
           </View>
           <TextInput
-            placeholder="Name"
+            placeholder="First Name"
             style={tailwind`bg-gray-50 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5`}
-            outlineStyle={tailwind`border rounded-xl `}            value={name.value}
-            onChangeText={(text) => setName({ value: text, error: '' })}
-            errorText={name.error}
+            outlineStyle={tailwind`border rounded-xl `}
+            value={firstName.value}
+            onChangeText={(text) => setFirstName({ value: text, error: '' })}
+            errorText={firstName.error}
           />
         </View>
-
+        <View style={tailwind`relative`}>
+          <View style={tailwind`absolute z-2 inset-y-0 left-5 top-9 flex items-center`}>
+            <Icon name="account" size={20} color="#888" />
+          </View>
+          <TextInput
+              placeholder="Last Name"
+              style={tailwind`bg-gray-50 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 py-1.5`}
+              outlineStyle={tailwind`border rounded-xl `}
+              value={lastName.value}
+              onChangeText={(text) => setLastName({ value: text, error: '' })}
+              errorText={lastName.error}
+          />
+        </View>
         {/* Email Input */}
         <View style={tailwind`relative `}>
           <View style={tailwind`absolute z-2 inset-y-0 left-5 top-9 flex items-center`}>
@@ -193,10 +213,13 @@ export default function RegisterScreen({ navigation }) {
       <Animated.View style={buttonStyle}>
         <Button
           mode="contained"
-          style={tailwind`bg-[#00347D] text-[#FEA928] text-xl mt-4`}
+          style={tailwind`bg-[#00347D] text-[#FEA928] text-xl mt-4 ${loading && 'bg-opacity-50'}`}
           onPress={onSignUpPressed}
         >
-          <Text style={tailwind`text-xl text-[#FEA928] font-bold`}>Sign Up</Text>
+
+          <Text style={tailwind`text-xl text-[#FEA928] font-bold`}>
+            {loading ? 'Loading...' : 'Sign Up'}
+          </Text>
         </Button>
 
         <View style={tailwind`flex-row justify-center mt-4`}>

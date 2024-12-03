@@ -9,12 +9,13 @@ import {useAuth} from '../../../context/AuthContext';
 import tailwind from 'twrnc';
 import Animated, {Easing, useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Toast from 'react-native-toast-message';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState({ value: '', error: '' });
   const [password, setPassword] = useState({ value: '', error: '' });
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const {login} = useAuth(login);
+  const {login,loading,error} = useAuth();
   const pattern1Position = useSharedValue(100);
   const pattern2Position = useSharedValue(-100);
   const websiteOpacity = useSharedValue(0);
@@ -56,17 +57,17 @@ export default function LoginScreen({ navigation }) {
   }));
 
 
-  const onLoginPressed = () => {
-    // navigation.navigate('MainNavigator', { screen: 'HomeScreen' });
-    // const emailError = emailValidator(email.value)
-    // const passwordError = passwordValidator(password.value)
-    // if (emailError || passwordError) {
-    //   setEmail({ ...email, error: emailError });
-    //   setPassword({ ...password, error: passwordError });
-    //   return;
-    // }
-    login(email.value, password.value);
-  }
+  const onLoginPressed =  () => {
+    const emailError = emailValidator(email.value);
+    const passwordError = passwordValidator(password.value);
+    if (emailError || passwordError) {
+      setEmail({ ...email, error: emailError });
+      setPassword({ ...password, error: passwordError });
+      return;
+    }
+
+   login( email.value, password.value );
+  };
 
   return (
     <View
@@ -185,7 +186,9 @@ export default function LoginScreen({ navigation }) {
         <Button mode="contained"
                 style={tailwind`bg-[#00347D] text-[#FEA928] text-xl mt-4`}
                 onPress={onLoginPressed}>
-          <Text style={tailwind`text-xl text-[#FEA928] font-bold`}>Sign In</Text>
+          <Text style={tailwind`text-xl text-[#FEA928] font-bold`}>
+            {loading ? 'Loading...' : 'Sign In'}
+          </Text>
         </Button>
 
       </View>
