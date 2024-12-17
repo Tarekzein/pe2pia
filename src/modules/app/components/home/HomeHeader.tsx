@@ -4,7 +4,11 @@ import tailwind from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather';
 import { useTheme } from '../../../../context/ThemeContext';
 
-const HomeHeader: React.FC = () => {
+interface HomeHeaderProps {
+    navigation: any;
+}
+
+const HomeHeader: React.FC<HomeHeaderProps> = ({navigation}) => {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
   const backgroundColor = isDarkMode ? tailwind`bg-gray-800`.backgroundColor : '#FFF8EC';
@@ -27,7 +31,9 @@ const HomeHeader: React.FC = () => {
       {/* Input and Icon Row */}
       <View style={tailwind`flex-row items-center mt-2`}>
         <View style={tailwind`w-10 h-10 bg-gray-300 rounded-full`} />
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {navigation.navigate('CreatePost')}}
+          >
             <Text style={[tailwind`ml-4 text-base`,
               isDarkMode ? tailwind`text-gray-300` : tailwind`text-[#00347D]`
             ]}>What do you have to share?</Text>

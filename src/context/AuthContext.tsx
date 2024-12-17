@@ -9,6 +9,7 @@ import {
   resetPassword,
   selectIsAuthenticated,
   selectAuthError,
+  selectCurrentUser,
   selectForgotPasswordEmail, selectAuthLoading,
 } from '../modules/auth/stores/authSlice.ts';
 import { AppDispatch } from '../modules/store.ts';
@@ -16,6 +17,7 @@ import Toast from "react-native-toast-message";
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  user: any;
   login: (email: string, password: string) => void;
   register: (email: string, firstName: string, lastName: string, password: string) => void;
   logout: () => void;
@@ -36,6 +38,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>();
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const user = useSelector(selectCurrentUser);
   const error = useSelector(selectAuthError);
   const loading = useSelector(selectAuthLoading);
   const forgotPasswordEmail = useSelector(selectForgotPasswordEmail);
@@ -88,6 +91,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   return (
     <AuthContext.Provider value={{
       isAuthenticated,
+      user,
       login: handleLogin,
       register:handleRegister,
       logout: handleLogout,

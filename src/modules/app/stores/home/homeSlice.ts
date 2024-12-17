@@ -4,23 +4,68 @@ import homeService from '../../services/homeService';
 
 interface HomeState {
     posts: any[];
-    loading: boolean;
+    postComments: any;
+    fetchPostsLoading: boolean;
+    fetchCommentsLoading: boolean;
     error: any;
 }
 
 const initialState: HomeState = {
     posts: [],
-    loading: false,
+    postComments: null,
+    fetchPostsLoading: false,
+    fetchCommentsLoading: false,
     error: null,
 };
+
 
 // Async thunk for fetching posts
 export const fetchPosts = createAsyncThunk(
     'home/fetchPosts',
-    async (_, { rejectWithValue }) => {
+    async (category:any, { rejectWithValue }) => {
         try {
-            const response = await homeService.fetchPosts();
+            const response = await homeService.fetchPosts(category);
             return response.data.data; // Assuming your API returns a `data` field
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
+export const likePost = createAsyncThunk(
+    'home/likePost',
+    async (postId: string, { rejectWithValue }) => {
+        try {
+            const response = await homeService.likePost(postId);
+            return response.data.data.post; // Assuming your API returns a `data` field
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
+export const fetchPostComments = createAsyncThunk(
+    'home/fetchPostComments',
+    async (postId: string, { rejectWithValue }) => {
+        try {
+            const response = await homeService.getPostComments(postId);
+            let data = response.data.data;
+            data.postId = postId;
+            return data; // Assuming your API returns a `data` field
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
+export const addComment = createAsyncThunk(
+    'home/addComment',
+    async ({ postId, comment }: any, { rejectWithValue }) => {
+        try {
+            const response = await homeService.addComment(postId, comment);
+            let data = response.data.data;
+            data.postId = postId;
+            return data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || error.message);
         }
@@ -33,16 +78,61 @@ const homeSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
+            // Fetch Posts
             .addCase(fetchPosts.pending, (state) => {
-                state.loading = true;
+                state.fetchPostsLoading = true;
                 state.error = null;
             })
             .addCase(fetchPosts.fulfilled, (state, action) => {
-                state.loading = false;
                 state.posts = action.payload.posts;
+                state.fetchPostsLoading = false;
             })
             .addCase(fetchPosts.rejected, (state, action) => {
-                state.loading = false;
+                state.fetchPostsLoading = false;
+                state.error = action.payload;
+            })
+
+            // Like Post
+            .addCase(likePost.pending, (state) => {
+                state.error = null;
+            })
+            .addCase(likePost.fulfilled, (state, action) => {
+                const post = state.posts.find((post) => post._id === action.payload._id);
+                if (post) {
+                    post.likes = action.payload.likes;
+                }
+            })
+            .addCase(likePost.rejected, (state, action) => {
+                state.error = action.payload;
+            })
+
+            // Fetch Post Comments
+            .addCase(fetchPostComments.pending, (state) => {
+                state.postComments = [];
+                state.fetchCommentsLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchPostComments.fulfilled, (state, action) => {
+                const post = state.posts.find((post) => post._id === action.payload.postId);
+                if (post) {
+                    post.comments = action.payload.comments;
+                    state.postComments = post.comments;
+                }
+                state.fetchCommentsLoading = false;
+            })
+            .addCase(fetchPostComments.rejected, (state, action) => {
+                state.error = action.payload;
+                state.fetchCommentsLoading = false;
+            })
+            .addCase(addComment.fulfilled, (state, action) => {
+                const post = state.posts.find((post) => post._id === action.payload.postId);
+                if (post) {
+                    post.comments.push(action.payload.comment);
+                    state.postComments = post.comments;
+                    console.log(post.comments);
+                }
+            })
+            .addCase(addComment.rejected, (state, action) => {
                 state.error = action.payload;
             });
     },
