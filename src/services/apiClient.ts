@@ -2,11 +2,11 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const apiClient = axios.create({
-  baseURL: 'http://api.pe2pia.com:5000/api',
-  // headers: {
-  //   'Content-Type': 'application/json',
-  //   'Accept': 'application/json',
-  // },
+    baseURL: 'http://api.pe2pia.com:5000/api',
+    headers: {
+        'Content-Type': 'multipart/form-data',
+        'Accept': 'application/json',
+    },
 });
 
 // Add a request interceptor to include the token in headers

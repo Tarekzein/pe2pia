@@ -3,20 +3,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../../modules/store.ts';
 import {
     fetchPosts,
+    createPost,
     likePost,
     fetchPostComments,
     selectHomeState,
-    addComment
+    addComment,
 } from '../stores/home/homeSlice';
 
 
 interface HomeContextType {
   posts: any[];
   postsLoading: boolean;
+  createPostLoading: boolean;
   commentsLoading: boolean;
   postComments: any[];
   error: any;
+  createPostError: any;
   fetchPosts: (category: any) => void;
+  createPost: (post: any) => void;
   fetchPostComments: (postId: string) => void;
   likePost: (postId: string) => void;
   addComment: (postId: string, comment: string) => void;
@@ -31,7 +35,7 @@ interface HomeProviderProps {
 
 const HomeProvider: React.FC<HomeProviderProps> = ({ children }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const { posts, fetchPostsLoading,fetchCommentsLoading, error,postComments } = useSelector(selectHomeState);
+    const { posts, fetchPostsLoading,fetchCommentsLoading,createPostLoading,createPostError, error,postComments } = useSelector(selectHomeState);
 
     const handleFetchPosts = async (category: any) => {
       try {
@@ -40,12 +44,18 @@ const HomeProvider: React.FC<HomeProviderProps> = ({ children }) => {
         console.error(err);
       }
     };
-
+    const handleCreatePost = async (post: any) => {
+        try {
+            await dispatch(createPost(post)).unwrap();
+        } catch (err: any) {
+            console.error(err);
+        }
+    }
     const handleLikePost = async (postId: string) => {
         try {
             await dispatch(likePost(postId)).unwrap();
         } catch (err: any) {
-            console.error(err);
+            throw err;
         }
     };
     const handleFetchPostComments = async (postId: string) => {
@@ -63,9 +73,11 @@ const HomeProvider: React.FC<HomeProviderProps> = ({ children }) => {
         }
     };
     return (
-        <HomeContext.Provider value={{ posts, error, postComments,
+        <HomeContext.Provider value={{ posts, error,createPostError, postComments,
             fetchPosts: handleFetchPosts ,
+            createPost: handleCreatePost,
             postsLoading: fetchPostsLoading,
+            createPostLoading: createPostLoading,
             commentsLoading: fetchCommentsLoading,
             fetchPostComments: handleFetchPostComments,
             likePost: handleLikePost,

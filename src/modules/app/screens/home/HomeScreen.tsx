@@ -85,12 +85,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
 
     // @ts-ignore
     return (
-        <View style={[tailwind`flex-1`, isDarkMode ? tailwind`bg-gray-900` : '']}>
+        <View style={[tailwind`flex-1 `, isDarkMode ? tailwind`bg-gray-900` : '']}>
             <HomeHeader navigation={navigation} />
             {/* Sticky Navigation Bar */}
             <View
                 style={[tailwind`flex-row p-4 justify-between items-center shadow-md sticky top-0 z-10`,
                     isDarkMode ? tailwind`bg-gray-800` : tailwind`bg-[#FFF8EC]`,
+
                 ]}
             >
                 <FlatList

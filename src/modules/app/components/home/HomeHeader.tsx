@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, Image, TouchableOpacity} from 'react-native';
+import {View, Text, Image, TouchableOpacity,StatusBar} from 'react-native';
 import tailwind from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather';
 import { useTheme } from '../../../../context/ThemeContext';
@@ -15,7 +15,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({navigation}) => {
 
   return (
     <View style={[tailwind`p-4`,{
-      backgroundColor
+      backgroundColor,
     }]}>
       {/* Top Section with Logo */}
       <View style={[tailwind`flex flex-row items-center`]}>

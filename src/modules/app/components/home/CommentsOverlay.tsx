@@ -79,13 +79,13 @@ const CommentsOverlay: React.FC<CommentsOverlayProps> = ({ visible, comments,pos
         onRequestClose={onClose}>
         <Animated.View
           style={[
-            tailwind`flex-1 justify-end bg-black bg-opacity-90`,
+            tailwind`flex-1 justify-end `,
             {transform: [{translateY}]},
           ]}
           {...panResponder.panHandlers}>
           <KeyboardAvoidingView
             style={tailwind`${
-              isDarkMode ? 'bg-gray-800' : 'bg-gray-100'
+              isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
             } flex-1 justify-between rounded-t-3xl p-4`}
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
             {/* Close Button */}

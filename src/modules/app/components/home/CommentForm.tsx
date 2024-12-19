@@ -27,7 +27,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ isDarkMode, postId }) => {
             style={[
                 tailwind`flex-row items-center pt-3 border-t`,
                 isDarkMode
-                    ? tailwind`border-gray-700 bg-gray-800`
+                    ? tailwind`border-gray-600 bg-gray-700`
                     : tailwind`border-gray-300`,
             ]}
         >
@@ -38,7 +38,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ isDarkMode, postId }) => {
                 style={[
                     tailwind`flex-1 h-10 rounded-full px-4 text-sm`,
                     isDarkMode
-                        ? tailwind`bg-gray-700 text-white`
+                        ? tailwind`bg-gray-600 text-white`
                         : tailwind`bg-gray-200 text-gray-800`,
                 ]}
                 placeholder="Comment on this post"

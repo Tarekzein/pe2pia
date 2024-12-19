@@ -15,7 +15,7 @@ const CommentCard:React.FC<CommentCardProps> = ({ comment,isDarkMode }) => {
                 <Text style={tailwind`text-${isDarkMode? 'white' : 'gray-800' } font-semibold`}>{comment.username}</Text>
                 <View
                 style={[
-                tailwind` rounded-xl mb-1 bg-${ isDarkMode ? 'gray-700' : 'gray-300'} p-4 mt-3`,
+                tailwind` rounded-xl mb-1 bg-${ isDarkMode ? 'gray-600' : 'gray-300'} p-4 mt-3`,
                 ]}
                 >
                     <Text style={tailwind`text-${isDarkMode? 'gray-300' : 'gray-800' }`}>{comment.text}</Text>

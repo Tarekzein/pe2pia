@@ -6,6 +6,8 @@ interface HomeState {
     posts: any[];
     postComments: any;
     fetchPostsLoading: boolean;
+    createPostLoading: boolean;
+    createPostError: any;
     fetchCommentsLoading: boolean;
     error: any;
 }
@@ -14,6 +16,8 @@ const initialState: HomeState = {
     posts: [],
     postComments: null,
     fetchPostsLoading: false,
+    createPostLoading: false,
+    createPostError: null,
     fetchCommentsLoading: false,
     error: null,
 };
@@ -31,7 +35,17 @@ export const fetchPosts = createAsyncThunk(
         }
     }
 );
-
+export const createPost = createAsyncThunk(
+    'home/createPost',
+    async (post: any, { rejectWithValue }) => {
+        try {
+            const response = await homeService.createPost(post);
+            return response.data.data.post; // Assuming your API returns a `data` field
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
 export const likePost = createAsyncThunk(
     'home/likePost',
     async (postId: string, { rejectWithValue }) => {
@@ -91,7 +105,18 @@ const homeSlice = createSlice({
                 state.fetchPostsLoading = false;
                 state.error = action.payload;
             })
-
+            .addCase(createPost.pending, (state) => {
+                state.createPostError = null;
+                state.createPostLoading = true;
+            })
+            .addCase(createPost.fulfilled, (state, action) => {
+                state.posts.unshift(action.payload);
+                state.createPostLoading = false;
+            })
+            .addCase(createPost.rejected, (state, action) => {
+                state.createPostError = action.payload;
+                state.createPostLoading = false;
+            })
             // Like Post
             .addCase(likePost.pending, (state) => {
                 state.error = null;

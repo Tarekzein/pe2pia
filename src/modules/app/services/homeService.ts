@@ -8,6 +8,9 @@ const homeService = {
       },
     });
   },
+    async createPost(post: any) {
+        return apiClient.post('/posts/createPost', post);
+    },
   async likePost(postId: string) {
     return apiClient.put('/posts/like/' + postId);
   },
