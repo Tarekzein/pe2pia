@@ -41,7 +41,7 @@ const authService = {
     return response.data;
   },
   logout: async () => {
-    await apiClient.post('/auth/logout');
+    await apiClient.post('/users/logout');
     // Remove the token and user data from localStorage
     await AsyncStorage.removeItem('token');
   },

@@ -9,7 +9,13 @@ const homeService = {
     });
   },
     async createPost(post: any) {
-        return apiClient.post('/posts/createPost', post);
+        console.log('post from service',post);
+        return apiClient.post('/posts/createPost', post, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
     },
   async likePost(postId: string) {
     return apiClient.put('/posts/like/' + postId);

@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './auth/stores/authSlice';
 import themeReducer from './app/stores/themeSlice';
 import homeReducer from './app/stores/home/homeSlice';
+import searchReducer from './app/stores/search/searchSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // AsyncStorage for React Native
 import { combineReducers } from 'redux';
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   theme: themeReducer,
   home: homeReducer,
+  search: searchReducer,
 });
 
 // Create a persisted reducer

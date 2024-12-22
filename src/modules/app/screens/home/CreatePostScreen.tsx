@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useTheme } from '../../../../context/ThemeContext';
+import { useAuth } from '../../../../context/AuthContext';
 import tailwind from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather';
 import Toast from 'react-native-toast-message';
@@ -21,7 +22,8 @@ interface CreatePostScreenProps {
 
 const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
     const { theme } = useTheme();
-    const { createPost, createPostLoading:loading,createPostError:error } = useHome();
+    const { user } = useAuth();
+    const { createPost, createPostLoading,createPostError } = useHome();
     const isDarkMode = theme === 'dark';
     const backgroundColor = isDarkMode ? tailwind`bg-gray-800`.backgroundColor : '#FFF8EC';
 
@@ -63,50 +65,48 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
     // Handle Post Submission
     const handleSubmission = async () => {
         if (!postText.trim()) {
-            Toast.show({
+            return Toast.show({
                 type: 'error',
                 text1: 'Validation Error',
                 text2: 'Post text is required.',
             });
-            return;
         }
 
+        const postData = new FormData();
+        postData.append('title', 'Post Title');
+        postData.append('description', postText);
+        postData.append('category', selectedType);
+        selectedImages.forEach((image) => {
+            postData.append(`image`, {
+                name: image.fileName || 'image.jpg',
+                type: image.type || 'image/jpeg',
+                uri: image.uri,
+            });
+        });
 
         try {
-            const postData = new FormData();
-            postData.append('title', 'Post Title');
-            postData.append('description', postText);
-            postData.append('category', selectedType);
-            selectedImages.forEach((image, index) => {
-                postData.append(`files[${index}]`, {
-                    name: image.fileName,
-                    type: image.type,
-                    uri: image.uri,
-                });
-            });
-            console.log('postData',postData);
-            createPost(postData);
-            console.log('error',error);
-            if (error) {
-                console.error(error);
-                Toast.show({
+            console.log('Post Data:', postData);
+            await createPost(postData);
+
+            if (createPostError) {
+                 Toast.show({
                     type: 'error',
                     text1: 'Error creating post',
-                    text2: error.message,
+                    text2: createPostError.message,
                 });
-            }else{
-                Toast.show({
-                    type: 'success',
-                    text1: 'Post created successfully!',
-                });
-                navigation.goBack();
+                return;
             }
-        } catch (error: any) {
-            console.error('Error creating post:', error.message);
+
+            Toast.show({
+                type: 'success',
+                text1: 'Post created successfully!',
+            });
+            navigation.navigate('Home');
+        } catch (err: any) {
             Toast.show({
                 type: 'error',
                 text1: 'Error creating post',
-                text2: error.message,
+                text2: err.message,
             });
         }
     };
@@ -153,10 +153,10 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
                                     : '#D1D5DB',
                         },
                     ]}
-                    disabled={!postText.trim() || loading}
+                    disabled={!postText.trim() || createPostLoading}
                     onPress={handleSubmission}
                 >
-                    {loading ? (
+                    {createPostLoading ? (
                         <ActivityIndicator size="small" color="#fff" style={tailwind`py-2 px-5`} />
                     ) : (
                         <Text
@@ -174,7 +174,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
                 <View style={tailwind`flex-row justify-between mb-5`}>
                     <View style={tailwind`flex-row items-center`}>
                         <Image
-                            source={{ uri: 'https://i.pravatar.cc/300' }}
+                            source={{ uri: user?.profilePicture.url }}
                             style={tailwind`w-12 h-12 rounded-full`}
                         />
                         <View style={tailwind`ml-3`}>
@@ -183,7 +183,7 @@ const CreatePostScreen: React.FC<CreatePostScreenProps> = ({ navigation }) => {
                                     isDarkMode ? 'text-white' : 'text-[#00347D]'
                                 }`}
                             >
-                                First name Last name
+                                {user?.FirstName} {user?.LastName}
                             </Text>
                             <View style={tailwind`relative`}>
                                 <TouchableOpacity

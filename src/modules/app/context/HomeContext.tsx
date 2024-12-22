@@ -47,10 +47,12 @@ const HomeProvider: React.FC<HomeProviderProps> = ({ children }) => {
     const handleCreatePost = async (post: any) => {
         try {
             await dispatch(createPost(post)).unwrap();
+            return 'success';
         } catch (err: any) {
             console.error(err);
+            return Promise.reject(err.message || 'Error creating post');
         }
-    }
+    };
     const handleLikePost = async (postId: string) => {
         try {
             await dispatch(likePost(postId)).unwrap();

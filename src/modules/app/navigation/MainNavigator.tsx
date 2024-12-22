@@ -2,7 +2,7 @@ import React from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';  // Change to Material Top Tab
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import SearchScreen from '../screens/SearchScreen';
+import SearchNavigator from './SearchNavigator';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import MessagesNavigator from './MessagesNavigator';
 import ProfileNavigator from './ProfileNavigator';
@@ -63,7 +63,7 @@ const MainNavigator: React.FC = () => {
 
       <Tab.Screen
         name="SearchScreen"
-        component={SearchScreen}
+        component={SearchNavigator}
         options={{
           tabBarIcon: ({ color, focused }) => (
             <View style={tailwind`flex justify-center items-center`}>

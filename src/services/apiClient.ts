@@ -4,8 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const apiClient = axios.create({
     baseURL: 'http://api.pe2pia.com:5000/api',
     headers: {
-        'Content-Type': 'multipart/form-data',
-        'Accept': 'application/json',
+        // 'Content-Type': 'multipart/form-data',
     },
 });
 

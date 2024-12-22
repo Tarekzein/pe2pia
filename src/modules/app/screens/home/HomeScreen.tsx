@@ -84,6 +84,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     };
 
     // @ts-ignore
+    // @ts-ignore
     return (
         <View style={[tailwind`flex-1 `, isDarkMode ? tailwind`bg-gray-900` : '']}>
             <HomeHeader navigation={navigation} />
@@ -134,14 +135,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
                         [...Array(4)].map((_, index) => <CardSkeleton key={index} isDarkMode={isDarkMode} />)
                     ) : (
                         posts.map((post, index) => (
-                            <Card
-                                key={index}
-                                post={post}
-                                userId={user}
-                                likePost={likePost}
-                                onPostClick={() => handlePostClick(post)} // Pass event handler
-                                onCommentsClick={handleCommentsClick} // Pass event handler
-                            />
+                            post.isAccepted && (
+                                <Card
+                                    key={index}
+                                    post={post}
+                                    userId={user.id}
+                                    likePost={likePost}
+                                    onPostClick={() => handlePostClick(post)} // Pass event handler
+                                    onCommentsClick={handleCommentsClick} // Pass event handler
+                                />
+                            )
                         ))
                     )}
                 </View>

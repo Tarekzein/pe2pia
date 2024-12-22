@@ -40,6 +40,9 @@ export const createPost = createAsyncThunk(
     async (post: any, { rejectWithValue }) => {
         try {
             const response = await homeService.createPost(post);
+            if (response.data.status === 'error') {
+                return rejectWithValue(response.data.message);
+            }
             return response.data.data.post; // Assuming your API returns a `data` field
         } catch (error: any) {
             return rejectWithValue(error.response?.data || error.message);
@@ -106,16 +109,16 @@ const homeSlice = createSlice({
                 state.error = action.payload;
             })
             .addCase(createPost.pending, (state) => {
-                state.createPostError = null;
                 state.createPostLoading = true;
+                state.createPostError = null;
             })
             .addCase(createPost.fulfilled, (state, action) => {
-                state.posts.unshift(action.payload);
                 state.createPostLoading = false;
+                // state.posts.unshift(action.payload);
             })
             .addCase(createPost.rejected, (state, action) => {
-                state.createPostError = action.payload;
                 state.createPostLoading = false;
+                state.createPostError = action.payload;
             })
             // Like Post
             .addCase(likePost.pending, (state) => {

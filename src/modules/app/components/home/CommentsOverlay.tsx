@@ -26,30 +26,60 @@ interface CommentsOverlayProps {
     loading: boolean;
 }
 const { height } = Dimensions.get('window');
-
-const CommentsOverlay: React.FC<CommentsOverlayProps> = ({ visible, comments,postId, isDarkMode, onClose,loading }) => {
+const CommentsOverlay: React.FC<CommentsOverlayProps> = ({
+                                                             visible,
+                                                             comments,
+                                                             postId,
+                                                             isDarkMode,
+                                                             onClose,
+                                                             loading
+                                                         }) => {
     const translateY = useRef(new Animated.Value(height)).current;
+    const opacity = useRef(new Animated.Value(0)).current;
+
     const panResponder = useRef(
         PanResponder.create({
+            onStartShouldSetPanResponder: () => true,
             onMoveShouldSetPanResponder: (_, gestureState) => {
-                return Math.abs(gestureState.dy) > 20;
+                return Math.abs(gestureState.dy) > 10;
             },
-            onPanResponderMove: Animated.event(
-                [null, { dy: translateY }],
-                { useNativeDriver: false }
-            ),
+            onPanResponderMove: (_, gestureState) => {
+                if (gestureState.dy > 0) { // Only allow downward movement
+                    translateY.setValue(gestureState.dy);
+                    // Calculate opacity based on movement
+                    const newOpacity = 1 - (gestureState.dy / (height * 0.5));
+                    opacity.setValue(Math.max(0, newOpacity));
+                }
+            },
             onPanResponderRelease: (_, gestureState) => {
-                if (gestureState.dy > height * 0.3) {
-                    Animated.timing(translateY, {
-                        toValue: height,
-                        duration: 200,
-                        useNativeDriver: true,
-                    }).start(onClose);
+                if (gestureState.dy > 100 || gestureState.vy > 0.5) {
+                    // Close modal if dragged down enough or with enough velocity
+                    Animated.parallel([
+                        Animated.timing(translateY, {
+                            toValue: height,
+                            duration: 200,
+                            useNativeDriver: true,
+                        }),
+                        Animated.timing(opacity, {
+                            toValue: 0,
+                            duration: 200,
+                            useNativeDriver: true,
+                        }),
+                    ]).start(onClose);
                 } else {
-                    Animated.spring(translateY, {
-                        toValue: 0,
-                        useNativeDriver: true,
-                    }).start();
+                    // Snap back to original position
+                    Animated.parallel([
+                        Animated.spring(translateY, {
+                            toValue: 0,
+                            useNativeDriver: true,
+                            tension: 100,
+                            friction: 8,
+                        }),
+                        Animated.spring(opacity, {
+                            toValue: 1,
+                            useNativeDriver: true,
+                        }),
+                    ]).start();
                 }
             },
         })
@@ -57,19 +87,21 @@ const CommentsOverlay: React.FC<CommentsOverlayProps> = ({ visible, comments,pos
 
     useEffect(() => {
         if (visible) {
-            Animated.timing(translateY, {
-                toValue: 0,
-                duration: 200,
-                useNativeDriver: true,
-            }).start();
-        } else {
-            Animated.timing(translateY, {
-                toValue: height,
-                duration: 200,
-                useNativeDriver: true,
-            }).start();
+            Animated.parallel([
+                Animated.spring(translateY, {
+                    toValue: 0,
+                    useNativeDriver: true,
+                    tension: 100,
+                    friction: 8,
+                }),
+                Animated.timing(opacity, {
+                    toValue: 1,
+                    duration: 200,
+                    useNativeDriver: true,
+                }),
+            ]).start();
         }
-    }, [translateY, visible]);
+    }, [visible]);
 
     return (
       <Modal
