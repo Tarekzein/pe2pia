@@ -44,6 +44,7 @@ const searchSlice = createSlice({
             .addCase(fetchSearch.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.searchResults = [];
             })
             .addCase(fetchSearch.fulfilled, (state, action) => {
                 state.loading = false;
