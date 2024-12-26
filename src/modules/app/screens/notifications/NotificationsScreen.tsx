@@ -2,16 +2,18 @@ import React, {useState} from 'react';
 import { View,ScrollView,Text,TouchableOpacity } from 'react-native';
 import tailwind from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather'; // Using Feather Icons
-import NotificationCard from '../components/notifications/NotificationCard';
-import { useTheme } from '../../../context/ThemeContext';
+import NotificationCard from '../../components/notifications/NotificationCard.tsx';
+import { useTheme } from '../../../../context/ThemeContext.tsx';
+import { useNotifications } from '../../context/NotificationsContext.tsx';
 interface HomeScreenProps {
   navigation: any;
 }
 
 const NotificationsScreen: React.FC<HomeScreenProps>  = ({navigation}) => {
   const { theme } = useTheme();
+  const { loading, error, fetchNotifications } = useNotifications();
   const isDarkMode = theme === 'dark';
-  const [notifications, setNotifications] = useState([
+  const [notifications] = useState([
     {
       id: 1,
       title: 'Success Notification',

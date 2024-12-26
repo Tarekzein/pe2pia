@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import InformationCard from '../../components/profile/InformationCard.tsx';
 import UserTabs from '../../components/profile/UserTabs.tsx';
 import { useTheme } from '../../../../context/ThemeContext';
+import { useAuth } from '../../../../context/AuthContext';
 
 interface ProfileScreenProps {
   navigation: any;
@@ -12,7 +13,7 @@ interface ProfileScreenProps {
 
 const ProfileScreen: React.FC<ProfileScreenProps>  = ({navigation}) => {
   const { theme } = useTheme();
-
+  const {user} = useAuth();
   const isDarkMode = theme === 'dark';
 
   return (
@@ -27,7 +28,7 @@ const ProfileScreen: React.FC<ProfileScreenProps>  = ({navigation}) => {
         </TouchableOpacity>
       </View>
         {/* Profile */}
-        <InformationCard isDarkMode={isDarkMode}  />
+        <InformationCard user={user} isDarkMode={isDarkMode}  />
         {/* Tabs */}
         <UserTabs />
     </View>

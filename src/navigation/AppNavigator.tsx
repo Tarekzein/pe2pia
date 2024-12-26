@@ -15,13 +15,14 @@ const AppNavigator = () => {
   const { isAuthenticated } = useAuth();
   // useEffect(() => {
   //   StatusBar.setHidden(true); // Hide the status bar
-  //   StatusBar.setBarStyle('light-content');
+  //   StatusBar.setBarStyle('light-content', true); // Set the status bar to light
   //   StatusBar.setBackgroundColor('transparent');
   // }, []);
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}
+      >
         {isAuthenticated ? (
           <Stack.Screen name="MainNavigator" component={MainNavigator} />
         ) : (

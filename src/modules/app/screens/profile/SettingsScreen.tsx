@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontIcons from 'react-native-vector-icons/FontAwesome5';
 import { useTheme } from '../../../../context/ThemeContext';
+import { useAuth } from '../../../../context/AuthContext';
 
 interface SettingsScreenProps {
   navigation: any;
@@ -12,7 +13,7 @@ interface SettingsScreenProps {
 
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const { theme, toggleTheme } = useTheme();
-
+  const { logout } = useAuth();
   const isDarkMode = theme === 'dark';
 
   return (
@@ -94,7 +95,9 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         </View>
 
         {/* Option 6: Log Out */}
-        <TouchableOpacity style={tailwind`flex-row items-center py-4`}>
+        <TouchableOpacity style={tailwind`flex-row items-center py-4`}
+            onPress={logout}
+        >
           <Icon name="log-out" size={30} color={isDarkMode ? "#FEA928" : "#00347D"} />
           <Text
             style={isDarkMode ? tailwind`ml-4 text-xl font-bold text-[#eee]` : tailwind`ml-4 text-xl font-bold text-[#FEA928]`}

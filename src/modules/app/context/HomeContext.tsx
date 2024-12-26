@@ -3,15 +3,27 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../../modules/store.ts';
 import {
     fetchPosts,
+    createPost,
+    likePost,
+    fetchPostComments,
     selectHomeState,
+    addComment,
 } from '../stores/home/homeSlice';
 
 
 interface HomeContextType {
-    posts: any[];
-    loading: boolean;
-    error: any;
-    fetchPosts: () => void;
+  posts: any[];
+  postsLoading: boolean;
+  createPostLoading: boolean;
+  commentsLoading: boolean;
+  postComments: any[];
+  error: any;
+  createPostError: any;
+  fetchPosts: (category: any) => void;
+  createPost: (post: any) => void;
+  fetchPostComments: (postId: string) => void;
+  likePost: (postId: string) => void;
+  addComment: (postId: string, comment: string) => void;
 }
 
 const HomeContext = createContext<HomeContextType | null>(null);
@@ -23,19 +35,56 @@ interface HomeProviderProps {
 
 const HomeProvider: React.FC<HomeProviderProps> = ({ children }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const { posts, loading, error } = useSelector(selectHomeState);
+    const { posts, fetchPostsLoading,fetchCommentsLoading,createPostLoading,createPostError, error,postComments } = useSelector(selectHomeState);
 
-    const handleFetchPosts = async () => {
+    const handleFetchPosts = async (category: any) => {
+      try {
+        await dispatch(fetchPosts(category)).unwrap();
+      } catch (err: any) {
+        console.error(err);
+      }
+    };
+    const handleCreatePost = async (post: any) => {
         try {
-            await dispatch(fetchPosts()).unwrap();
+            await dispatch(createPost(post)).unwrap();
+            return 'success';
+        } catch (err: any) {
+            console.error(err);
+            return Promise.reject(err.message || 'Error creating post');
+        }
+    };
+    const handleLikePost = async (postId: string) => {
+        try {
+            await dispatch(likePost(postId)).unwrap();
+        } catch (err: any) {
+            throw err;
+        }
+    };
+    const handleFetchPostComments = async (postId: string) => {
+        try {
+            await dispatch(fetchPostComments(postId)).unwrap();
         } catch (err: any) {
             console.error(err);
         }
     };
-
+    const handleAddComment = async (postId: string, comment: string) => {
+        try {
+            await dispatch(addComment({ postId, comment })).unwrap();
+        } catch (err: any) {
+            console.error(err);
+        }
+    };
     return (
-        <HomeContext.Provider value={{ posts, loading, error,
-            fetchPosts: handleFetchPosts }}>
+        <HomeContext.Provider value={{ posts, error,createPostError, postComments,
+            fetchPosts: handleFetchPosts ,
+            createPost: handleCreatePost,
+            postsLoading: fetchPostsLoading,
+            createPostLoading: createPostLoading,
+            commentsLoading: fetchCommentsLoading,
+            fetchPostComments: handleFetchPostComments,
+            likePost: handleLikePost,
+            addComment: handleAddComment,
+        }}>
             {children}
         </HomeContext.Provider>
     );
