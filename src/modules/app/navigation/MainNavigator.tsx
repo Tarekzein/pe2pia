@@ -3,10 +3,10 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import SearchNavigator from './SearchNavigator';
-import NotificationsScreen from '../screens/NotificationsScreen';
 import MessagesNavigator from './MessagesNavigator';
 import ProfileNavigator from './ProfileNavigator';
 import HomeNavigator from './HomeNavigator';
+import NotificationsNavigator from './NotificationsNavigator';
 import tailwind from 'twrnc';
 import { View } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
@@ -22,16 +22,16 @@ const MainNavigator: React.FC = () => {
       initialRouteName="HomeScreen"
       screenOptions={{
         // headerShown: false,
-        tabBarActiveTintColor: isDarkMode?'#FEA928':'#00347D',
-        tabBarInactiveTintColor: isDarkMode?'#FFF8EC':'#FEA928',
+        tabBarActiveTintColor: isDarkMode ? '#FEA928' : '#00347D',
+        tabBarInactiveTintColor: isDarkMode ? '#FFF8EC' : '#FEA928',
         tabBarIndicatorStyle: {
           backgroundColor: 'transparent',
         },
         tabBarStyle: {
           display: 'flex',
-          backgroundColor: isDarkMode ?'rgb(31 41 55)': '#FFF8EC',
+          backgroundColor: isDarkMode ? 'rgb(31 41 55)' : '#FFF8EC',
           borderTopWidth: 0.2, // No border for the top tab bar
-          borderTopColor: isDarkMode ? '#D1D5DB': '#00347D66'  ,
+          borderTopColor: isDarkMode ? '#D1D5DB' : '#00347D66'  ,
           height: 60,
           // marginBottom:20,
         },
@@ -52,7 +52,7 @@ const MainNavigator: React.FC = () => {
           tabBarIcon: ({ color, focused }) => (
             <View style={tailwind`flex justify-center items-center`}>
               <MaterialIcon
-                name={focused ? "home-variant" : "home-variant-outline"}
+                name={focused ? 'home-variant' : 'home-variant-outline'}
                 color={color}
                 size={35}
               />
@@ -68,7 +68,7 @@ const MainNavigator: React.FC = () => {
           tabBarIcon: ({ color, focused }) => (
             <View style={tailwind`flex justify-center items-center`}>
               <FeatherIcon
-                name={focused ? "search" : "search"}
+                name={focused ? 'search' : 'search'}
                 color={color}
                 size={35}
               />
@@ -79,12 +79,12 @@ const MainNavigator: React.FC = () => {
 
       <Tab.Screen
         name="NotificationsScreen"
-        component={NotificationsScreen}
+        component={NotificationsNavigator}
         options={{
           tabBarIcon: ({ color, focused }) => (
             <View style={tailwind`flex justify-center items-center`}>
               <MaterialIcon
-                name={focused ? "bell" : "bell-outline"}
+                name={focused ? 'bell' : 'bell-outline'}
                 color={color}
                 size={35}
               />
@@ -100,7 +100,7 @@ const MainNavigator: React.FC = () => {
           tabBarIcon: ({ color, focused }) => (
             <View style={tailwind`flex justify-center items-center`}>
               <MaterialIcon
-                name={focused ? "chat" : "chat-outline"}
+                name={focused ? 'chat' : 'chat-outline'}
                 color={color}
                 size={35}
               />
@@ -116,7 +116,7 @@ const MainNavigator: React.FC = () => {
           tabBarIcon: ({ color, focused }) => (
             <View style={tailwind`flex justify-center items-center`}>
               <MaterialIcon
-                name={focused ? "account" : "account-outline"}
+                name={focused ? 'account' : 'account-outline'}
                 color={color}
                 size={35}
               />

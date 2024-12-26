@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "232377380289",
+    "project_id": "pe2pia",
+    "storage_bucket": "pe2pia.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232377380289:android:e162e497fdd25a2bead340",
+        "android_client_info": {
+          "package_name": "com.pe2pia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASUwcAzqIb18TerWbmzxhr7GQwLMdaoS4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

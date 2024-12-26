@@ -21,7 +21,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     const { user } = useAuth();
     const isDarkMode = theme === 'dark';
 
-    const [selectedPost, setSelectedPost] = useState(null);
+    const [selectedPost, setSelectedPost] = useState<any>();
     const [overlayVisible, setOverlayVisible] = useState(false);
     const [commentsOverlayVisible, setCommentsOverlayVisible] = useState(false);
     const [categories] = useState([
