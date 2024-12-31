@@ -8,16 +8,20 @@ import WelcomeNavigator from '../modules/welcome/navigation/WelcomeNavigator';
 import { useAuth } from '../context/AuthContext.tsx';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import {useTheme} from "../context/ThemeContext.tsx";
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   const { isAuthenticated } = useAuth();
-  // useEffect(() => {
+  const { theme } = useTheme();
+  const isDarkMode = theme === 'dark';
+
+    useEffect(() => {
   //   StatusBar.setHidden(true); // Hide the status bar
   //   StatusBar.setBarStyle('light-content', true); // Set the status bar to light
-  //   StatusBar.setBackgroundColor('transparent');
-  // }, []);
+    StatusBar.setBackgroundColor(isDarkMode ? '#1F2937' : '#FFF8EC'); // Set the background color of the status bar
+  }, [isDarkMode]);
 
   return (
     <NavigationContainer>

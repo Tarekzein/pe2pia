@@ -40,7 +40,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({navigation}) => {
       {/* Input and Icon Row */}
       <View style={tailwind`flex-row items-center mt-2`}>
         <Image
-          source={{uri: user.profilePicture.url}}
+          source={{uri: user.profilePicture?.url}}
           style={tailwind`w-10 h-10  rounded-full`}
         />
         <TouchableOpacity
