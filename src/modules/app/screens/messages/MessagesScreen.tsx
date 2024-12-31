@@ -1,9 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import { View, ScrollView, TouchableOpacity, Text, Animated, Dimensions } from 'react-native';
 import tailwind from 'twrnc';
 import ChatCard from '../../components/messages/ChatCard.tsx'; // Assuming the ChatCard component is separate
 import Icon from 'react-native-vector-icons/Feather';
 import {useTheme} from '../../../../context/ThemeContext';
+import {useAuth} from '../../../../context/AuthContext.tsx';
+import {useMessages} from "../../context/MessagesContext.tsx";
 
 const tabs = ['All chats', 'Groups', 'Requests'];
 const screenWidth = Dimensions.get('window').width;
@@ -18,42 +20,12 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
   const translateX = useRef(new Animated.Value(0)).current; // For sliding effect
   const currentTabIndex = tabs.indexOf(activeTab);
   const { theme } = useTheme();
+  const { user } = useAuth();
+  const {fetchChats,chats} = useMessages();
   const isDarkMode = theme === 'dark';
-
-  const chats = [
-    {
-      title: 'First Last',
-      message: 'First is typing...',
-      time: '09:40 am',
-      isTyping: true,
-      unreadCount: 2,
-    },
-    {
-      title: 'First Last',
-      message: 'My turtle is more little!',
-      time: '09:15 am',
-      isTyping: false,
-      unreadCount: 1,
-    },
-    {
-      title: 'First Last',
-      message: 'I feel like I want to sing with my parrot :)',
-      time: 'yesterday',
-      isTyping: false,
-    },
-    {
-      title: 'First Last',
-      message: 'See you at the next event!',
-      time: '15 Nov',
-      isTyping: false,
-    },
-    {
-      title: 'Gathering',
-      message: 'Thank you for help..',
-      time: '25 Oct',
-      isTyping: false,
-    },
-  ];
+  useEffect(() => {
+    fetchChats(user.id);
+  }, []);
 
   const handleTabChange = (tab: string) => {
     const newTabIndex = tabs.indexOf(tab);
@@ -137,13 +109,13 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
           {chats.map((chat, index) => (
             <ChatCard
               key={index}
-              title={chat.title}
-              message={chat.message}
-              time={chat.time}
-              isTyping={chat.isTyping}
-              unreadCount={chat.unreadCount}
+              title={chat.title??''}
+              message={chat.message??''}
+              time={chat.time??''}
+              isTyping={chat.isTyping??false}
+              unreadCount={chat.unreadCount??0}
               isDarkMode={isDarkMode}
-              onPress={() => navigation.navigate('Chat', { title: chat.title })}
+              onPress={() => navigation.navigate('Chat', { title: chat.title??'' })}
             />
           ))}
         </ScrollView>
