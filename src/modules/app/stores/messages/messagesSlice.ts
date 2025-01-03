@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../../store'; // Ensure the path to your store is correct
 import messagesService from '../../services/messagesService';
 import usersService from '../../services/users/usersService';
@@ -25,6 +25,16 @@ interface Chat {
     members: User[];
     createdAt: string;
     updatedAt: string;
+}
+
+interface Message {
+    id: string;
+    text: string;
+    senderId: string;
+    conversationId: string;
+    createdAt: string;
+    image?: string;
+    status: 'sending' | 'sent' | 'failed';
 }
 
 interface MessagesState {
@@ -58,14 +68,14 @@ export const fetchChats = createAsyncThunk<
                 // @ts-ignore
                 const membersWithDetails = await Promise.all(
                   chat.members.map(async memberId => {
-                    const response = await usersService.fetchUser(memberId);
-                    return response.data.data.user;
+                      const response = await usersService.fetchUser(memberId);
+                      return response.data.data.user;
                   }),
                 );
                 return {...chat, members: membersWithDetails};
               }),
             );
-
+            console.log(chatsWithUserDetails);
             return chatsWithUserDetails;
 
         } catch (error: any) {
@@ -76,23 +86,64 @@ export const fetchChats = createAsyncThunk<
 
 export const fetchMessages = createAsyncThunk(
     'messages/fetchMessages',
-    async (_, { rejectWithValue }) => {
+    async (id:string, { rejectWithValue }) => {
         try {
-            const response = await messagesService.fetchMessages();
-            return response.data.data; // Assuming your API returns a `data` field
+            const response = await messagesService.fetchMessages(id);
+            return response.data; // Assuming your API returns a `data` field
         } catch (error: any) {
             return rejectWithValue(error.response?.data || error.message);
         }
     }
 );
 
-export const sendMessage = createAsyncThunk(
+// In messagesSlice.ts
+
+export const sendMessage = createAsyncThunk<
+    any,
+    any,
+    { rejectValue: string }
+>(
     'messages/sendMessage',
-    async (message: string, { rejectWithValue }) => {
+    async (data, { dispatch, rejectWithValue }) => {
+        const tempId = Math.random().toString(36); // Generate a random temporary ID
+
+        // Create a local message with status 'sending'
+        const localMessage: Message = {
+            id: tempId,
+            text: data.text,
+            senderId: data.senderId,
+            conversationId: data.conversationId,
+            createdAt: new Date().toISOString(),
+            image: data.image,
+            status: 'sending',
+        };
+
+        // Add the message to the local state immediately
+        dispatch(addLocalMessage(localMessage));
+
         try {
-            const response = await messagesService.sendMessage(message);
-            return response.data.data; // Assuming your API returns a `data` field
+            // Send the message to the backend
+            const response = await messagesService.sendMessage(data);
+            const savedMessage = response.data; // Assuming the API returns the saved message with an _id
+
+            // Update the message in the state with the real ID and status 'sent'
+            dispatch(
+                updateMessageStatus({
+                    tempId,
+                    newId: savedMessage._id,
+                    status: 'sent',
+                })
+            );
+
+            return savedMessage;
         } catch (error: any) {
+            // If there was an error sending the message, update the status to 'failed'
+            dispatch(
+                updateMessageStatus({
+                    tempId,
+                    status: 'failed',
+                })
+            );
             return rejectWithValue(error.response?.data || error.message);
         }
     }
@@ -105,6 +156,25 @@ const messagesSlice = createSlice({
         clearMessages(state) {
             state.messages = [];
         },
+        addLocalMessage(state, action: PayloadAction<Message>) {
+            state.messages.push(action.payload);
+        },
+        updateMessageStatus(
+            state,
+            action: PayloadAction<{ tempId: string; newId?: string; status: 'sent' | 'failed' }>
+        ) {
+            const { tempId, newId, status } = action.payload;
+            const index = state.messages.findIndex((msg) => msg.id === tempId);
+            if (index !== -1) {
+                const currentMessage = state.messages[index];
+                // Replace the message with a new object
+                state.messages[index] = {
+                    ...currentMessage,
+                    id: newId || currentMessage.id,
+                    status: status,
+                };
+            }
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -124,31 +194,38 @@ const messagesSlice = createSlice({
             .addCase(fetchMessages.pending, (state) => {
                 state.loading = true;
                 state.error = null;
-                state.messages = [];
             })
             .addCase(fetchMessages.fulfilled, (state, action) => {
                 state.loading = false;
-                state.messages = action.payload;
+                // Filter out any messages that are not in the fetched data
+                // Prevent duplicates based on message ID
+                const fetchedMessageIds = new Set(action.payload.map((msg: Message) => msg.id));
+                state.messages = [
+                    ...state.messages.filter(
+                        (msg) => !fetchedMessageIds.has(msg.id) && msg.status === 'sending'
+                    ),
+                    ...action.payload,
+                ];
             })
             .addCase(fetchMessages.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
-            .addCase(sendMessage.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(sendMessage.fulfilled, (state, action) => {
-                state.loading = false;
-                state.messages.push(action.payload);
-            })
-            .addCase(sendMessage.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload;
-            });
+            // .addCase(sendMessage.pending, (state) => {
+            //     state.loading = true;
+            //     state.error = null;
+            // })
+            // .addCase(sendMessage.fulfilled, (state, action) => {
+            //     state.loading = false;
+            //     state.messages.push(action.payload);
+            // })
+            // .addCase(sendMessage.rejected, (state, action) => {
+            //     state.loading = false;
+            //     state.error = action.payload;
+            // });
     },
 });
 
-export const { clearMessages } = messagesSlice.actions;
+export const { clearMessages, addLocalMessage, updateMessageStatus } = messagesSlice.actions;
 export const selectMessagesState = (state: RootState) => state.messages;
 export default messagesSlice.reducer;

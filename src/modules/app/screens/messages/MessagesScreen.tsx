@@ -109,13 +109,15 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
           {chats.map((chat, index) => (
             <ChatCard
               key={index}
-              title={chat.title??''}
+              user={
+                chat.members.find((member: { id: string }) => member.id !== user.id)??{}
+              }
               message={chat.message??''}
               time={chat.time??''}
               isTyping={chat.isTyping??false}
               unreadCount={chat.unreadCount??0}
               isDarkMode={isDarkMode}
-              onPress={() => navigation.navigate('Chat', { title: chat.title??'' })}
+              onPress={() => navigation.navigate('Chat', { chat: chat, user: user })}
             />
           ))}
         </ScrollView>
