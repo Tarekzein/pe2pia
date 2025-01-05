@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 import tailwind from 'twrnc';
 
 interface ChatItemProps {
-  title: string;
+  user:any;
   message: string;
   time: string;
   isTyping?: boolean;
@@ -13,7 +13,7 @@ interface ChatItemProps {
 }
 
 const ChatCard: React.FC<ChatItemProps> = ({
-                                             title,
+                                               user,
                                              message,
                                              time,
                                              isTyping,
@@ -25,7 +25,7 @@ const ChatCard: React.FC<ChatItemProps> = ({
       isDarkMode? tailwind`border-gray-600`:tailwind`border-gray-200`
     ]} onPress={onPress}>
       {/* Avatar Placeholder */}
-      <View style={tailwind`w-10 h-10 rounded-full bg-gray-200`} />
+      <Image source={{uri: user.profilePicture.url}} style={tailwind`w-10 h-10 rounded-full bg-gray-200`} />
 
       {/* Content Container */}
       <View style={tailwind`flex-1 ml-3`}>
@@ -33,7 +33,7 @@ const ChatCard: React.FC<ChatItemProps> = ({
         <View style={tailwind`flex-row justify-between items-center`}>
           <Text style={[tailwind`text-lg font-medium`,
             isDarkMode? tailwind`text-white`:tailwind`text-[#00347D]`
-          ]}>{title}</Text>
+          ]}>{user.FirstName} {user.LastName}</Text>
           <Text style={tailwind`text-sm text-gray-500`}>{time}</Text>
         </View>
 

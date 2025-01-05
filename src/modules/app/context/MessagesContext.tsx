@@ -10,13 +10,13 @@ import {
 } from '../stores/messages/messagesSlice';
 
 interface MessagesContextType {
-    chats: any[];
-    messages: any[];
-    loading: boolean;
-    error: any;
-    fetchChats: (id:string) => void;
-    fetchMessages: () => void;
-    sendMessage: (message: string) => void;
+  chats: any[];
+  messages: any[];
+  loading: boolean;
+  error: any;
+  fetchChats: (id: string) => void;
+  fetchMessages: (id: string) => void;
+  sendMessage: (message: {conversationId: any; text: string}) => void;
 }
 
 const MessagesContext = createContext<MessagesContextType | null>(null);
@@ -37,22 +37,22 @@ const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) => {
         }
     };
 
-    const handleFetchMessages = async () => {
+    const handleFetchMessages = async (id:string) => {
         try {
-            await dispatch(fetchMessages()).unwrap();
+            await dispatch(fetchMessages(id)).unwrap();
         } catch (err: any) {
             console.error(err);
         }
     };
 
-    const handleSendMessage = async (message: string) => {
+
+    const handleSendMessage = async (message: any) => {
         try {
             await dispatch(sendMessage(message)).unwrap();
         } catch (err: any) {
             console.error(err);
         }
     };
-
     return (
         <MessagesContext.Provider
             value={{
