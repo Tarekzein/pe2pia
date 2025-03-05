@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';  // Change to Material Top Tab
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
@@ -8,15 +8,24 @@ import ProfileNavigator from './ProfileNavigator';
 import HomeNavigator from './HomeNavigator';
 import NotificationsNavigator from './NotificationsNavigator';
 import tailwind from 'twrnc';
-import { View } from 'react-native';
+import {StatusBar, View} from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
-
+import { initializeNotifications } from '../services/fcm/notificationService';
 const Tab = createMaterialTopTabNavigator();  // Updated to Material Top Tab
 
 
 const MainNavigator: React.FC = () => {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
+  useEffect(() => {
+    initializeNotifications();
+  }, []);
+
+  useEffect(() => {
+    //   StatusBar.setHidden(true); // Hide the status bar
+    //   StatusBar.setBarStyle('light-content', true); // Set the status bar to light
+    StatusBar.setBackgroundColor(isDarkMode ? '#1F2937' : '#FFF8EC'); // Set the background color of the status bar
+  }, [isDarkMode]);
   return (
     <Tab.Navigator
       initialRouteName="HomeScreen"

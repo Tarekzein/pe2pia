@@ -34,7 +34,7 @@ const Card: React.FC<CardProps> = ({post,onPostClick,onCommentsClick,userId,like
         }
     };
   return (
-    <View style={[tailwind`mb-2 rounded-xl p-4`, {backgroundColor}]}>
+    <View style={[tailwind`mb-1  p-4`, {backgroundColor}]}>
       {/* User Info */}
       <View style={tailwind`flex-row justify-between items-center`}>
         <View style={tailwind`flex-row`}>

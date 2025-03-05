@@ -1,0 +1,6 @@
+{
+  "react-native": {
+    "messaging_ios_auto_register": true,
+    "crashlytics_debug_enabled": true
+  }
+}

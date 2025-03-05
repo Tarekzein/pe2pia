@@ -9,10 +9,11 @@ const authService = {
         // Check if the response is valid
         if (response && response.data && response.data.data) {
           const token = response.data.data.token;
+          const id = response.data.data.id;
 
           // Store the token in AsyncStorage
           await AsyncStorage.setItem('token', token);
-
+          await AsyncStorage.setItem('userId',id );
           // Return the extracted user data
           return response.data.data;
         }
@@ -44,6 +45,7 @@ const authService = {
     await apiClient.post('/users/logout');
     // Remove the token and user data from localStorage
     await AsyncStorage.removeItem('token');
+    await AsyncStorage.removeItem('userId');
   },
   forgotPassword: async (email: string) => {
     const response = await apiClient.post('/auth/forgot-password', { email });

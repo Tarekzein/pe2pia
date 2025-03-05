@@ -14,15 +14,6 @@ const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   const { isAuthenticated } = useAuth();
-  const { theme } = useTheme();
-  const isDarkMode = theme === 'dark';
-
-    useEffect(() => {
-  //   StatusBar.setHidden(true); // Hide the status bar
-  //   StatusBar.setBarStyle('light-content', true); // Set the status bar to light
-    StatusBar.setBackgroundColor(isDarkMode ? '#1F2937' : '#FFF8EC'); // Set the background color of the status bar
-  }, [isDarkMode]);
-
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}
