@@ -19,7 +19,7 @@ export const fetchNotifications = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await notificationsService.fetchNotifications();
-            return response.data.data; // Assuming your API returns a `data` field
+            return response.data.notifications; // Assuming your API returns a `data` field
         } catch (error: any) {
             return rejectWithValue(error.response?.data || error.message);
         }

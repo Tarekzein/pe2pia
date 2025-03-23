@@ -1,9 +1,8 @@
 import React from 'react';
-import {Card} from 'react-native-paper';
+import { View, Image, Text, TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import LinearGradient from 'react-native-linear-gradient';
 import tailwind from 'twrnc';
-import { View, Image } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient'; // Import LinearGradient
 
 interface NotificationCardProps {
   notification: {
@@ -11,12 +10,17 @@ interface NotificationCardProps {
     message: string;
     type: string;
     date: string;
-    avatar: string; // URL for the avatar image
+    avatar: string;
   },
   isDarkMode?: boolean,
+  onPress?: () => void;
 }
 
-const NotificationCard: React.FC<NotificationCardProps> = ({ notification,isDarkMode }) => {
+const NotificationCard: React.FC<NotificationCardProps> = ({
+                                                             notification,
+                                                             isDarkMode,
+                                                             onPress
+                                                           }) => {
   const getIcon = (type: string) => {
     switch (type) {
       case 'success':
@@ -26,54 +30,134 @@ const NotificationCard: React.FC<NotificationCardProps> = ({ notification,isDark
       case 'info':
         return 'information-outline';
       case 'like':
-        return 'heart-outline'; // Example for like
+        return 'heart-outline';
       case 'share':
-        return 'share-variant'; // Example for share
+        return 'share-variant';
+      case 'chat':
+        return 'chat-outline';
       default:
         return 'bell-outline';
     }
   };
 
-  return (
-    <LinearGradient
-      colors={['rgba(254, 203, 125, 0.16)', 'rgba(254, 203, 125, 0.08)']}
-      start={{ x: 0, y: 0 }} // Gradient start point
-      end={{ x: 1, y: 0 }} // Gradient end point
-      style={[
-        tailwind`m-4 rounded-xl`,
-        isDarkMode ? tailwind`bg-gray-700 border-gray-700`
-          :
-          tailwind`border-gray-200`
-      ]}
-    > {/* Gradient background applied here */}
+  const getIconColor = (type: string) => {
+    switch (type) {
+      case 'success':
+        return '#4CAF50';
+      case 'error':
+        return '#F44336';
+      case 'like':
+        return '#E91E63';
+      case 'info':
+        return '#2196F3';
+      case 'chat':
+        return '#FFC107';
+      default:
+        return '#FEA928';
+    }
+  };
 
-      <Card.Content style={tailwind`py-3`}>
-        <Card.Title
-          title={notification.title}
-          subtitle={notification.date}
-          titleStyle={isDarkMode ? tailwind`text-white` : tailwind`text-[#00347D]`}
-          subtitleStyle={[tailwind`text-right text-sm`,
-            isDarkMode ? tailwind`text-gray-300` : tailwind`text-[#00347D]`
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      <LinearGradient
+        colors={
+          isDarkMode
+            ? ['rgba(55, 65, 81, 0.5)', 'rgba(55, 65, 81, 0.3)']
+            : ['rgba(254, 203, 125, 0.16)', 'rgba(254, 203, 125, 0.08)']
+        }
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={[
+          tailwind`mx-4 my-2 rounded-xl overflow-hidden`,
+          {
+            shadowColor: isDarkMode ? '#ffffff20' : '#00000020',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
+            elevation: 3,
+          }
+        ]}
+      >
+        <View
+          style={[
+            tailwind`flex-row items-center p-4`,
+            isDarkMode
+              ? tailwind`bg-gray-800/50`
+              : tailwind`bg-transparent`
           ]}
-          left={() => (
-            <View style={tailwind`relative`}>
-              {/* Avatar Image */}
-              <Image
-                source={{ uri: notification.avatar }}
-                style={tailwind`w-12 h-12 rounded-full border-2 border-white`} // Avatar styling with Tailwind
-              />
-              {/* Icon on Avatar */}
+        >
+          {/* Avatar Container */}
+          <View style={tailwind`relative mr-4`}>
+            <Image
+              source={{ uri: notification.avatar }}
+              style={[
+                tailwind`w-14 h-14 rounded-full`,
+                {
+                  borderWidth: 2,
+                  borderColor: isDarkMode ? '#FEA92850' : '#00347D20'
+                }
+              ]}
+            />
+            {/* Notification Type Icon */}
+            <View
+              style={[
+                tailwind`absolute -bottom-1 -right-1 p-1 rounded-full`,
+                {
+                  backgroundColor: getIconColor(notification.type),
+                  borderWidth: 2,
+                  borderColor: isDarkMode ? '#374151' : '#FFF8EC'
+                }
+              ]}
+            >
               <MaterialCommunityIcons
                 name={getIcon(notification.type)}
-                size={20}
+                size={16}
                 color="white"
-                style={tailwind`absolute bg-[#00347D] -bottom-3 -right-3 p-1 rounded-full`} // Icon styling with Tailwind
               />
             </View>
-          )}
-        />
-      </Card.Content>
-    </LinearGradient>
+          </View>
+
+          {/* Notification Content */}
+          <View style={tailwind`flex-1`}>
+            <Text
+              style={[
+                tailwind`text-base font-bold`,
+                isDarkMode
+                  ? tailwind`text-gray-100`
+                  : tailwind`text-[#00347D]`
+              ]}
+              numberOfLines={1}
+            >
+              {notification.title}
+            </Text>
+            <Text
+              style={[
+                tailwind`text-sm mt-1`,
+                isDarkMode
+                  ? tailwind`text-gray-300`
+                  : tailwind`text-[#00347D80]`
+              ]}
+              numberOfLines={2}
+            >
+              {notification.message}
+            </Text>
+            <Text
+              style={[
+                tailwind`text-xs mt-1 text-right`,
+                isDarkMode
+                  ? tailwind`text-gray-400`
+                  : tailwind`text-[#00347D60]`
+              ]}
+            >
+              {notification.date}
+            </Text>
+          </View>
+        </View>
+      </LinearGradient>
+    </TouchableOpacity>
   );
 };
 

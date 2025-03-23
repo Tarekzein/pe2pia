@@ -9,7 +9,7 @@ interface CommentCardProps {
 
 const CommentCard:React.FC<CommentCardProps> = ({ comment,isDarkMode }) => {
     return (
-        <View style={tailwind`flex-row items-start my-5`}>
+        <View style={tailwind`flex-row items-start my-5 w-full`}>
             <Image source={{ uri: comment.user.profilePicture?.url }} style={tailwind`w-10 h-10 rounded-full`} />
             <View style={tailwind`ml-3 w-auto`}>
                 <Text style={tailwind`text-${isDarkMode? 'white' : 'gray-800' } font-semibold`}>{comment.username}</Text>
