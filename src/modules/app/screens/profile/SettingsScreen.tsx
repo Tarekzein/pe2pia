@@ -16,6 +16,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const { logout } = useAuth();
   const isDarkMode = theme === 'dark';
 
+  // @ts-ignore
   return (
     <View
       style={
@@ -45,7 +46,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
       {/* Settings Options */}
       <View style={tailwind`mt-10 mx-6`}>
         {/* Option 1: Edit Profile */}
-        <TouchableOpacity style={tailwind`flex-row items-center py-4`}>
+        <TouchableOpacity onPress={() => navigation.navigate('EditProfile')}
+          style={tailwind`flex-row items-center py-4`}>
           <FontIcons
             name="user-circle"
             size={30}

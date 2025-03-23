@@ -84,10 +84,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const handleVerifyOtp = (email: string, otp: string) => {
     dispatch(verifyOtp({ email, otp }));
-  }
+  };
   const handleResetPassword = (email: string, password: string, password_confirmation: string) => {
     dispatch(resetPassword({ email, password, password_confirmation }));
-  }
+  };
   return (
     <AuthContext.Provider value={{
       isAuthenticated,

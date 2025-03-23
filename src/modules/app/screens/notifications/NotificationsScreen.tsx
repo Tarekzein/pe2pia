@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import {View, ScrollView, Text, TouchableOpacity, RefreshControl} from 'react-native';
+import { View, ScrollView, Text, TouchableOpacity, RefreshControl } from 'react-native';
 import tailwind from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather';
-import NotificationCard from '../../components/notifications/NotificationCard.tsx';
-import { useTheme } from '../../../../context/ThemeContext.tsx';
-import { useNotifications } from '../../context/NotificationsContext.tsx';
+import NotificationCard from '../../components/notifications/NotificationCard';
+import NotificationCardSkeleton from '../../components/notifications/NotificationCardSkeleton';
+import { useTheme } from '../../../../context/ThemeContext';
+import { useNotifications } from '../../context/NotificationsContext';
 import {
   formatDistanceToNow,
   parseISO,
   differenceInMinutes,
   isToday,
-  isYesterday,
-  format
+  isYesterday
 } from 'date-fns';
 
 interface FormattedNotification {
@@ -29,7 +29,7 @@ interface NotificationGroup {
   notifications: FormattedNotification[];
 }
 
-const NotificationsScreen: React.FC<{navigation: any}> = ({ navigation }) => {
+const NotificationsScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const { theme } = useTheme();
   const { loading, error, fetchNotifications, notifications } = useNotifications();
   const isDarkMode = theme === 'dark';
@@ -40,9 +40,10 @@ const NotificationsScreen: React.FC<{navigation: any}> = ({ navigation }) => {
     fetchNotifications();
   }, []);
 
-  // Transform and group notifications
+  // Transform and group notifications once they load
   const groupedNotifications = useMemo(() => {
-    // Transform notifications
+    if (loading || notifications.length === 0) return [];
+
     const transformed = notifications.map(notification => {
       const createdAt = parseISO(notification.createdAt);
 
@@ -78,31 +79,27 @@ const NotificationsScreen: React.FC<{navigation: any}> = ({ navigation }) => {
         type: type,
         date: formatDistanceToNow(createdAt, { addSuffix: true }),
         avatar: avatar,
-        createdAt: createdAt
+        createdAt: createdAt,
       };
     });
 
-    // Sort notifications by most recent first
     const sorted = transformed.sort((a, b) =>
       b.createdAt.getTime() - a.createdAt.getTime()
     );
 
-    // Group notifications dynamically
     const groups: NotificationGroup[] = [];
     const now = new Date();
 
-    // Group logic
     const addGroup = (groupTitle: string, filterFn: (notification: FormattedNotification) => boolean) => {
       const groupNotifications = sorted.filter(filterFn);
       if (groupNotifications.length > 0) {
         groups.push({
           title: groupTitle,
-          notifications: groupNotifications
+          notifications: groupNotifications,
         });
       }
     };
 
-    // Dynamic grouping
     addGroup('Just Now', n => differenceInMinutes(now, n.createdAt) < 30);
     addGroup('Today', n => isToday(n.createdAt) && differenceInMinutes(now, n.createdAt) >= 30);
     addGroup('Yesterday', n => isYesterday(n.createdAt));
@@ -116,7 +113,7 @@ const NotificationsScreen: React.FC<{navigation: any}> = ({ navigation }) => {
     });
 
     return groups;
-  }, [notifications]);
+  }, [notifications, loading]);
 
   return (
     <View style={[
@@ -163,29 +160,44 @@ const NotificationsScreen: React.FC<{navigation: any}> = ({ navigation }) => {
         </View>
 
         <ScrollView style={tailwind`my-4 p-2`}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={loading}
-              onRefresh={fetchNotifications}
-              tintColor={isDarkMode ? '#FEA928' : '#00347D'}
-            />
-          }
+                    showsVerticalScrollIndicator={false}
+                    refreshControl={
+                      <RefreshControl
+                        refreshing={loading}
+                        onRefresh={fetchNotifications}
+                        tintColor={isDarkMode ? '#FEA928' : '#00347D'}
+                      />
+                    }
         >
-          {groupedNotifications.map((group, index) => (
-            <View key={index}>
-              <Text style={tailwind`font-bold text-[#FEA928] text-3xl mt-4`}>
-                {group.title}
-              </Text>
-              {group.notifications.map(notification => (
-                <NotificationCard
-                  key={notification.id}
-                  isDarkMode={isDarkMode}
-                  notification={notification}
-                />
+          {loading ? (
+            // Render skeleton cards while loading
+            <>
+              {[...Array(5)].map((_, index) => (
+                <NotificationCardSkeleton key={index} isDarkMode={isDarkMode} />
               ))}
-            </View>
-          ))}
+            </>
+          ) : groupedNotifications.length > 0 ? (
+            // Render grouped notifications once loaded
+            groupedNotifications.map((group, index) => (
+              <View key={index}>
+                <Text style={tailwind`font-bold text-[#FEA928] text-3xl mt-4`}>
+                  {group.title}
+                </Text>
+                {group.notifications.map(notification => (
+                  <NotificationCard
+                    key={notification.id}
+                    isDarkMode={isDarkMode}
+                    notification={notification}
+                  />
+                ))}
+              </View>
+            ))
+          ) : (
+            // If no notifications are available
+            <Text style={tailwind`text-center text-gray-500 mt-5`}>
+              No notifications available.
+            </Text>
+          )}
         </ScrollView>
       </View>
     </View>
