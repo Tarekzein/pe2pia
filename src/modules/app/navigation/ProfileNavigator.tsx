@@ -4,9 +4,11 @@ import ProfileScreen from '../screens/profile/ProfileScreen';
 import SettingsScreen from '../screens/profile/SettingsScreen';
 import LanguageScreen from '../screens/profile/LanguageScreen';
 import EditProfileScreen from '../screens/profile/EditProfileScreen';
+import { ProfileProvider } from '../context/ProfileContext';
 const Stack = createStackNavigator();
 const ProfileNavigator = () => {
     return (
+      <ProfileProvider>
         <Stack.Navigator
             initialRouteName="Profile"
             screenOptions={{
@@ -30,6 +32,7 @@ const ProfileNavigator = () => {
                 component={LanguageScreen}
             />
         </Stack.Navigator>
+      </ProfileProvider>
     );
 }
 

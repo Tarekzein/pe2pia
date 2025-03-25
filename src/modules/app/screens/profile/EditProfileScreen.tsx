@@ -6,13 +6,15 @@ import {
   TextInput,
   Image,
   KeyboardAvoidingView,
-  Platform,
+  Platform, ActivityIndicator,
 } from 'react-native';
 import tailwind from 'twrnc';
 import Icon from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useTheme } from '../../../../context/ThemeContext';
 import { useAuth } from '../../../../context/AuthContext';
+import { useProfile } from '../../context/ProfileContext';
+import Toast from 'react-native-toast-message';
 
 // 1) Import Formik and Yup
 import { Formik } from 'formik';
@@ -20,8 +22,8 @@ import * as Yup from 'yup';
 
 // Validation schema for the form
 const EditProfileSchema = Yup.object().shape({
-  first_name: Yup.string().required('First Name is required'),
-  last_name: Yup.string().required('Last Name is required'),
+  FirstName: Yup.string().required('First Name is required'),
+  LastName: Yup.string().required('Last Name is required'),
   email: Yup.string().email('Invalid email').required('Email is required'),
 });
 
@@ -33,17 +35,27 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
   const { user } = useAuth();
-
+  const { loading,updateProfile } = useProfile();
   const initialValues = {
-    first_name: user?.FirstName || '',
-    last_name: user?.LastName || '',
+    FirstName: user?.FirstName || '',
+    LastName: user?.LastName || '',
     email: user?.email || '',
     bio: user?.bio || '',
   };
 
   const handleFormSubmit = (values: typeof initialValues) => {
-    console.log('Form submitted:', values);
-    navigation.goBack();
+    try {
+      console.log('Submitting form:', values);
+      updateProfile(values);
+      Toast.show({
+        type: 'success',
+        text1: 'Profile Updated',
+        text2: 'Your profile has been updated successfully',
+      });
+      navigation.goBack();
+    }catch (error) {
+      console.log('Error updating profile:', error);
+    }
   };
 
   return (
@@ -121,12 +133,12 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
                 ]}
                 placeholder="First Name"
                 placeholderTextColor={isDarkMode ? '#bbb' : '#999'}
-                onChangeText={handleChange('first_name')}
-                onBlur={handleBlur('first_name')}
-                value={values.first_name}
+                onChangeText={handleChange('FirstName')}
+                onBlur={handleBlur('FirstName')}
+                value={values.FirstName}
               />
-              {errors.first_name && touched.first_name && (
-                <Text style={tailwind`text-red-500 text-sm`}>{errors.first_name}</Text>
+              {errors.FirstName && touched.FirstName && (
+                <Text style={tailwind`text-red-500 text-sm`}>{errors.FirstName}</Text>
               )}
 
               {/* Last Name */}
@@ -140,12 +152,12 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
                 ]}
                 placeholder="Last Name"
                 placeholderTextColor={isDarkMode ? '#bbb' : '#999'}
-                onChangeText={handleChange('last_name')}
-                onBlur={handleBlur('last_name')}
-                value={values.last_name}
+                onChangeText={handleChange('LastName')}
+                onBlur={handleBlur('LastName')}
+                value={values.LastName}
               />
-              {errors.last_name && touched.last_name && (
-                <Text style={tailwind`text-red-500 text-sm`}>{errors.last_name}</Text>
+              {errors.LastName && touched.LastName && (
+                <Text style={tailwind`text-red-500 text-sm`}>{errors.LastName}</Text>
               )}
 
               {/* Email */}
@@ -196,16 +208,22 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
             <View style={tailwind`px-6 mt-8`}>
               <TouchableOpacity
                 style={[
-                  tailwind`rounded-full py-3 items-center`,
-                  { backgroundColor: '#00347D' },
+                  tailwind`rounded-full py-3 items-center flex-row justify-center`,
+                  { backgroundColor: loading ? '#888' : '#00347D' }, // Change color when loading
                 ]}
                 onPress={handleSubmit as any}
+                disabled={loading} // Disable button when loading
               >
-                <Text style={tailwind`text-white text-lg font-bold`}>
-                  Save changes
-                </Text>
+                {loading ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <Text style={tailwind`text-white text-lg font-bold`}>
+                    Save changes
+                  </Text>
+                )}
               </TouchableOpacity>
             </View>
+
           </KeyboardAvoidingView>
         )}
       </Formik>
