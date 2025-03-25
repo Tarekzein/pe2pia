@@ -146,7 +146,7 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
               user={
                 chat.members.find((member: { id: string }) => member.id !== user.id) ?? {}
               }
-              message={chat.message ?? ''}
+              message={chat.lastMessage?.text ?? ''}
               time={chat.time ?? ''}
               isTyping={chat.isTyping ?? false}
               unreadCount={chat.unreadCount ?? 0}
