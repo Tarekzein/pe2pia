@@ -21,35 +21,109 @@ const SearchResultsList: React.FC = () => {
         return item.type === activeTab.toLowerCase(); // Ensure item.type matches tab name
     });
 
-    const RenderSearchPeople = ({ item }: { item: any }) => (
-        <View
+  const RenderSearchPeople = ({ item }: { item: any }) => (
+    <TouchableOpacity
+      style={[
+        tailwind`p-3 mx-2 my-1 rounded-xl flex-row items-center`,
+        isDarkMode ? tailwind`bg-gray-800` : tailwind`bg-white`,
+        {
+          shadowColor: isDarkMode ? '#000' : '#666',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 3,
+          elevation: 3,
+        }
+      ]}
+    >
+      {/* Profile Picture Section */}
+      <View style={tailwind`mr-3`}>
+        {item.profilePicture?.url ? (
+          <Image
+            source={{ uri: item.profilePicture?.url }}
             style={[
-                tailwind`p-4 m-2 rounded-lg flex-row items-start justify-between`,
-                isDarkMode ? tailwind`bg-gray-700` : tailwind`bg-white`,
+              tailwind`w-14 h-14 rounded-full`,
+              {
+                borderWidth: 2,
+                borderColor: isDarkMode ? '#3b82f6' : '#1877f2'
+              }
             ]}
-        >
-            <View style={tailwind`flex-row items-start`}>
-                <Image source={{ uri: item.profilePicture?.url }} style={tailwind`w-9 h-9 mr-2 rounded-full`} />
-                <View style={tailwind``}>
-                    <Text style={[tailwind`text-lg font-bold`,isDarkMode ? tailwind`text-white` : tailwind`text-black`]}>
-                        {item.FirstName} {item.LastName || ''}
-                    </Text>
-                    <Text style={isDarkMode ? tailwind`text-gray-400` : tailwind`text-gray-600`}>
-                        {item.bio}
-                    </Text>
-                </View>
+          />
+        ) : (
+          <View
+            style={[
+              tailwind`w-14 h-14 rounded-full bg-gray-200 items-center justify-center`,
+              isDarkMode && tailwind`bg-gray-700`
+            ]}
+          >
+            <Icon name="user" size={24} color={isDarkMode ? '#fff' : '#666'} />
+          </View>
+        )}
+      </View>
 
+      {/* Content Section */}
+      <View style={tailwind`flex-1`}>
+        <View style={tailwind`flex-row items-center justify-between`}>
+          <View style={tailwind`flex-1`}>
+            <Text
+              style={[
+                tailwind`text-base font-semibold`,
+                isDarkMode ? tailwind`text-white` : tailwind`text-gray-900`
+              ]}
+              numberOfLines={1}
+            >
+              {item.FirstName} {item.LastName || ''}
+            </Text>
 
-            </View>
+            {item.bio && (
+              <Text
+                style={[
+                  tailwind`text-sm mt-0.5`,
+                  isDarkMode ? tailwind`text-gray-400` : tailwind`text-gray-500`
+                ]}
+                numberOfLines={2}
+              >
+                {item.bio}
+              </Text>
+            )}
+          </View>
 
-            <TouchableOpacity onPress={() => console.log('Follow action triggered')}>
-                <Text style={isDarkMode ? tailwind`text-gray-400` : tailwind`text-gray-600`}>
-                    Follow
-                </Text>
-            </TouchableOpacity>
-
+          {/* Follow Button */}
+          <TouchableOpacity
+            style={[
+              tailwind`px-4 py-2 rounded-full ml-2`,
+              isDarkMode ?
+                tailwind`bg-gray-700` :
+                tailwind`bg-blue-50`
+            ]}
+            onPress={() => console.log('Follow action triggered')}
+          >
+            <Text
+              style={[
+                tailwind`font-medium`,
+                isDarkMode ?
+                  tailwind`text-blue-400` :
+                  tailwind`text-blue-600`
+              ]}
+            >
+              Follow
+            </Text>
+          </TouchableOpacity>
         </View>
-    );
+
+        {/* Optional: Add mutual friends or other info */}
+        {item.mutualFriends && (
+          <Text
+            style={[
+              tailwind`text-xs mt-1`,
+              isDarkMode ? tailwind`text-gray-500` : tailwind`text-gray-400`
+            ]}
+          >
+            {item.mutualFriends} mutual friends
+          </Text>
+        )}
+      </View>
+    </TouchableOpacity>
+  );
 
     const RenderSearchGroups = ({ item }: { item: any }) => (
         <View

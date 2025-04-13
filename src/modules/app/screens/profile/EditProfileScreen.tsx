@@ -33,6 +33,7 @@ import {
 // Formik and Yup for validation
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import {updateProfileImage} from '~/src/modules/app/stores/profile/profileSlice.ts';
 const CROP_SIZE = 300; // Consistent crop size
 
 // Validation schema
@@ -52,9 +53,10 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   const isDarkMode = theme === 'dark';
   const { user } = useAuth();
   const { loading, updateProfile } = useProfile();
-
+  const {updateProfileImage} = useProfile();
   // Local State for Profile Picture
   const [selectedImage, setSelectedImage] = useState(user?.profilePicture?.url || '');
+  const [uploadImage, setUploadImage] = useState<any>(null);
   const [isImageSelectionModalVisible, setImageSelectionModalVisible] = useState(false);
 
   // Gesture Values
@@ -80,6 +82,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
       compressImageQuality: 0.8,
     }).then(image => {
       setSelectedImage(image.path);
+      setUploadImage(image);
       setImageSelectionModalVisible(false);
     }).catch(error => {
       console.log('Camera error:', error);
@@ -101,6 +104,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
       compressImageQuality: 0.8,
     }).then(image => {
       setSelectedImage(image.path);
+      setUploadImage(image);
       setImageSelectionModalVisible(false);
     }).catch(error => {
       console.log('Image picker error:', error);
@@ -255,9 +259,30 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = ({ navigation }) => 
   const handleFormSubmit = (values: typeof initialValues) => {
     try {
       updateProfile({
-        ...values,
-        profilePicture: selectedImage
+        ...values
       });
+      // If there's a new image selected and it's different from the current profile picture
+      if (selectedImage && selectedImage !== user?.profilePicture?.url) {
+        // Create FormData object
+        const formData = new FormData();
+
+        // Get the file name from the path
+        const fileName = uploadImage?.filename;
+
+        // Get the file extension
+        const fileType = uploadImage?.mime;
+        console.log(uploadImage);
+        // Append the image with proper structure
+        formData.append('image', {
+          uri: uploadImage?.path,
+          type: fileType,
+          name: fileName || 'profile-image.jpg',
+        });
+
+        // Update the profile image
+        updateProfileImage(formData);
+      }
+
       Toast.show({
         type: 'success',
         text1: 'Profile Updated',

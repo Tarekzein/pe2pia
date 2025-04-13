@@ -16,7 +16,7 @@ interface MessagesContextType {
   error: any;
   fetchChats: (id: string) => void;
   fetchMessages: (id: string) => void;
-  sendMessage: (message: {conversationId: any; text: string}) => void;
+  sendMessage: (message: any) => void;
 }
 
 const MessagesContext = createContext<MessagesContextType | null>(null);

@@ -110,6 +110,10 @@ const authSlice = createSlice({
     updateUser(state, action) {
       state.user = action.payload;
     },
+    updateUserProfile(state, action) {
+      state.user.profilePicture.url = action.payload.url;
+      state.user.profilePicture.public_id = action.payload.public_id;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -199,5 +203,5 @@ export const selectAuthLoading = (state: RootState) => state.auth.loading;
 export const selectCurrentUser = (state: RootState) => state.auth.user; // Selector for user data
 export const selectToken = (state:RootState) => state.auth.token; // Selector for token
 export const selectForgotPasswordEmail = (state: RootState) => state.auth.forgotPasswordEmail;
-export const { updateUser } = authSlice.actions;
+export const { updateUser,updateUserProfile } = authSlice.actions;
 export default authSlice.reducer;

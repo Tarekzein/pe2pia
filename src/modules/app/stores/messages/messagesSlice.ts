@@ -21,8 +21,10 @@ interface User {
 }
 
 interface Chat {
+    unreadCount: number;
     _id: string;
     members: User[];
+    lastMessage: any;
     createdAt: string;
     updatedAt: string;
 }
@@ -75,7 +77,6 @@ export const fetchChats = createAsyncThunk<
                 return {...chat, members: membersWithDetails};
               }),
             );
-            console.log(chatsWithUserDetails);
             return chatsWithUserDetails;
 
         } catch (error: any) {
@@ -181,13 +182,21 @@ const messagesSlice = createSlice({
             .addCase(fetchChats.pending, (state) => {
                 state.loading = true;
                 state.error = null;
-                state.chats = [];
             })
-            .addCase(fetchChats.fulfilled, (state, action) => {
-                state.loading = false;
-                state.chats = action.payload;
-            })
-            .addCase(fetchChats.rejected, (state, action) => {
+          .addCase(fetchChats.fulfilled, (state, action) => {
+              state.loading = false;
+              action.payload.forEach((chat) => {
+                  const index = state.chats.findIndex(existingChat => existingChat._id === chat._id);
+                  if (index === -1) {
+                      // Chat is new, so add it
+                      state.chats.push(chat);
+                  } else if (chat.unreadCount > 0 || chat.lastMessage._id !== state.chats[index].lastMessage._id) {
+                      // Chat exists and has an unread count greater than zero, so update it
+                      state.chats[index] = chat;
+                  }
+              });
+          })
+          .addCase(fetchChats.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })

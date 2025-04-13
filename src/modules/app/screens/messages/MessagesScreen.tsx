@@ -1,14 +1,25 @@
-import React, {useState, useRef, useEffect} from 'react';
-import { View, ScrollView, TouchableOpacity, Text, Animated, Dimensions } from 'react-native';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import {
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+  Animated,
+  Dimensions,
+  AppState,
+  AppStateStatus, RefreshControl,
+} from 'react-native';
 import tailwind from 'twrnc';
-import ChatCard from '../../components/messages/ChatCard.tsx'; // Assuming the ChatCard component is separate
+import ChatCard from '../../components/messages/ChatCard.tsx';
 import Icon from 'react-native-vector-icons/Feather';
-import {useTheme} from '../../../../context/ThemeContext';
-import {useAuth} from '../../../../context/AuthContext.tsx';
-import {useMessages} from "../../context/MessagesContext.tsx";
+import { useTheme } from '../../../../context/ThemeContext';
+import { useAuth } from '../../../../context/AuthContext.tsx';
+import { useMessages } from "../../context/MessagesContext.tsx";
 import UserAvatar from '../../components/messages/UserAvatar.tsx';
+
 const tabs = ['All chats', 'Groups', 'Requests'];
 const screenWidth = Dimensions.get('window').width;
+const FETCH_INTERVAL = 1000; // 3 seconds
 
 interface MessagesScreenProps {
   navigation: any;
@@ -16,30 +27,81 @@ interface MessagesScreenProps {
 
 const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('All chats');
-  const fadeAnim = useRef(new Animated.Value(1)).current; // For fading effect
-  const translateX = useRef(new Animated.Value(0)).current; // For sliding effect
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const translateX = useRef(new Animated.Value(0)).current;
   const currentTabIndex = tabs.indexOf(activeTab);
   const { theme } = useTheme();
   const { user } = useAuth();
   const { fetchChats, chats } = useMessages();
   const isDarkMode = theme === 'dark';
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const appState = useRef(AppState.currentState);
 
-  // Dummy online users list; ideally, fetch this from your backend or context.
+  // Dummy online users list
   const [onlineUsers, setOnlineUsers] = useState<any>([
     { id: '1', firstName: 'Alice', lastName: 'Smith', profilePicture: 'https://i.pravatar.cc/301', isOnline: true },
     { id: '2', firstName: 'Bob', lastName: 'Jones', profilePicture: 'https://i.pravatar.cc/302', isOnline: true },
     { id: '3', firstName: 'Charlie', lastName: 'Brown', profilePicture: 'https://i.pravatar.cc/303', isOnline: false },
-    { id: '4', firstName: 'Diana', lastName: 'Prince', profilePicture: 'https://i.pravatar.cc/304', isOnline: true },
-    { id: '4', firstName: 'Diana', lastName: 'Prince', profilePicture: 'https://i.pravatar.cc/304', isOnline: true },
-    { id: '4', firstName: 'Diana', lastName: 'Prince', profilePicture: 'https://i.pravatar.cc/304', isOnline: false },
-    { id: '4', firstName: 'Diana', lastName: 'Prince', profilePicture: 'https://i.pravatar.cc/304', isOnline: true },
-    { id: '4', firstName: 'Diana', lastName: 'Prince', profilePicture: 'https://i.pravatar.cc/304', isOnline: false },
-    { id: '4', firstName: 'Diana', lastName: 'Prince', profilePicture: 'https://i.pravatar.cc/304', isOnline: false },]);
+    // ... other users
+  ]);
 
-  useEffect(() => {
-    fetchChats(user.id);
-    // Optionally fetch online users here
+  // Start periodic chat fetching
+  const startPeriodicFetching = useCallback(() => {
+    // Clear any existing interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    // Set up new interval
+    intervalRef.current = setInterval(() => {
+      fetchChats(user.id);
+    }, FETCH_INTERVAL);
   }, []);
+
+  // Handle app state changes
+  const handleAppStateChange = useCallback((nextAppState: AppStateStatus) => {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      // App has come to the foreground
+      fetchChats(user.id);
+      startPeriodicFetching();
+    } else if (
+      appState.current === 'active' &&
+      nextAppState.match(/inactive|background/)
+    ) {
+      // App has gone to the background
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    }
+
+    appState.current = nextAppState;
+  }, [ startPeriodicFetching]);
+
+  // Initial setup and cleanup
+  useEffect(() => {
+    // Fetch initial chats
+    fetchChats(user.id);
+
+    // Start periodic fetching
+    startPeriodicFetching();
+
+    // Add app state listener
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    // Cleanup
+    return () => {
+      // Remove interval
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+
+      // Remove app state listener
+      subscription.remove();
+    };
+  }, [startPeriodicFetching, handleAppStateChange]);
 
   const handleTabChange = (tab: string) => {
     const newTabIndex = tabs.indexOf(tab);
@@ -58,8 +120,8 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
         useNativeDriver: true,
       }),
     ]).start(() => {
-      setActiveTab(tab); // Update the active tab
-      translateX.setValue(-direction * screenWidth); // Reset position for new content
+      setActiveTab(tab);
+      translateX.setValue(-direction * screenWidth);
 
       Animated.parallel([
         Animated.timing(fadeAnim, {
@@ -124,7 +186,6 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
               user={onlineUser}
               isDarkMode={isDarkMode}
               onPress={() => {
-                // Navigate to the user's chat or profile, as needed
                 navigation.navigate('Chat', { chat: null, user: onlineUser });
               }}
             />
@@ -139,7 +200,42 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
           { opacity: fadeAnim, transform: [{ translateX }] },
         ]}
       >
-        <ScrollView>
+        <ScrollView
+          style={tailwind`px-4`}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={tailwind`pb-20`}
+          onScrollBeginDrag={() => {
+            Animated.timing(fadeAnim, {
+              toValue: 0.5,
+              duration: 200,
+              useNativeDriver: true,
+            }).start();
+          }}
+          onScrollEndDrag={() => {
+            Animated.timing(fadeAnim, {
+              toValue: 1,
+              duration: 200,
+              useNativeDriver: true,
+            }).start();
+          }}
+          scrollEventThrottle={16}
+          onScroll={() => {
+            Animated.timing(translateX, {
+              toValue: 0,
+              duration: 200,
+              useNativeDriver: true,
+            }).start();
+          }}
+          refreshControl={
+            <RefreshControl
+              refreshing={false}
+              colors={['#FEA928']}
+              onRefresh={() => {
+                fetchChats(user.id);
+              }}
+            />
+          }
+        >
           {chats.map((chat, index) => (
             <ChatCard
               key={index}

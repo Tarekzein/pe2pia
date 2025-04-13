@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import {RootState, store} from '../../../store'; // Ensure the path to your store is correct
+import {RootState} from '../../../store'; // Ensure the path to your store is correct
 import searchService from '../../services/profileService';
-import { updateUser } from '../../../auth/stores/authSlice'; // Import updateUser action
+import { updateUser,updateUserProfile } from '../../../auth/stores/authSlice'; // Import updateUser action
 
 interface ProfileState {
     profile: any;
@@ -39,6 +39,20 @@ export const updateProfile = createAsyncThunk(
       }
   }
 );
+
+export const updateProfileImage = createAsyncThunk(
+  'profile/updateProfileImage',
+  async (data: any, { rejectWithValue, dispatch }) => {
+      try {
+          const response = await searchService.updateProfileImage(data);
+          dispatch(updateUserProfile(response.data.profilePhotos[0])); // Dispatch updateUser here
+          return response.data.data;
+      } catch (error: any) {
+          return rejectWithValue(error.response?.data || error.message);
+      }
+  }
+);
+
 const profileSlice = createSlice({
     name: 'profile',
     initialState,
@@ -71,6 +85,18 @@ const profileSlice = createSlice({
                 state.profile = action.payload;
             })
             .addCase(updateProfile.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(updateProfileImage.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateProfileImage.fulfilled, (state, action) => {
+                state.loading = false;
+                state.error = null;
+            })
+            .addCase(updateProfileImage.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

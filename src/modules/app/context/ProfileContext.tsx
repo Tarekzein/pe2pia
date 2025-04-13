@@ -5,6 +5,7 @@ import { AppDispatch } from '../../../modules/store.ts';
 import {
     fetchProfile,
     updateProfile,
+    updateProfileImage,
     selectProfileState,
 } from '../stores/profile/profileSlice';
 
@@ -15,6 +16,7 @@ interface ProfileContextType {
     error: any;
     fetchProfile: () => void;
     updateProfile: (data: any) => void;
+    updateProfileImage: (data: any) => void;
 }
 
 const ProfileContext = createContext<ProfileContextType | null>(null);
@@ -43,6 +45,14 @@ const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) => {
         }
     };
 
+    const handleUpdateProfileImage = async (data: any) => {
+        try {
+            await dispatch(updateProfileImage(data)).unwrap();
+        } catch (err: any) {
+            console.error(err);
+        }
+    };
+
     return (
         <ProfileContext.Provider
             value={{
@@ -51,6 +61,7 @@ const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) => {
                 error,
                 fetchProfile: handleFetchProfile,
                 updateProfile: handleUpdateProfile,
+                updateProfileImage: handleUpdateProfileImage,
             }}
         >
             {children}
