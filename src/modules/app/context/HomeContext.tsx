@@ -4,6 +4,7 @@ import { AppDispatch } from '../../../modules/store.ts';
 import {
     fetchPosts,
     createPost,
+    deletePost,
     likePost,
     fetchPostComments,
     selectHomeState,
@@ -21,6 +22,7 @@ interface HomeContextType {
   createPostError: any;
   fetchPosts: (category: any) => void;
   createPost: (post: any) => void;
+  deletePost: (postId: string) => void;
   fetchPostComments: (postId: string) => void;
   likePost: (postId: string) => void;
   addComment: (postId: string, comment: string) => void;
@@ -53,6 +55,13 @@ const HomeProvider: React.FC<HomeProviderProps> = ({ children }) => {
             return Promise.reject(err.message || 'Error creating post');
         }
     };
+    const handleDeletePost = async (postId: string) => {
+        try {
+            await dispatch(deletePost(postId)).unwrap();
+        } catch (err: any) {
+            console.error(err);
+        }
+    };
     const handleLikePost = async (postId: string) => {
         try {
             await dispatch(likePost(postId)).unwrap();
@@ -78,6 +87,7 @@ const HomeProvider: React.FC<HomeProviderProps> = ({ children }) => {
         <HomeContext.Provider value={{ posts, error,createPostError, postComments,
             fetchPosts: handleFetchPosts ,
             createPost: handleCreatePost,
+            deletePost: handleDeletePost,
             postsLoading: fetchPostsLoading,
             createPostLoading: createPostLoading,
             commentsLoading: fetchCommentsLoading,

@@ -14,7 +14,7 @@ interface CardProps {
   userId: string;
   likePost: (postId: string) => void;
   onEditPost?: () => void;
-  onDeletePost?: () => void;
+  onDeletePost?: (postID: string) => void;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -63,7 +63,9 @@ const Card: React.FC<CardProps> = ({
 
   const handleDeletePost = () => {
     handleModalClose();
-    onDeletePost && onDeletePost();
+    if (onDeletePost) {
+      onDeletePost(post._id);
+    }
   };
 
   return (
@@ -169,25 +171,25 @@ const Card: React.FC<CardProps> = ({
           />
 
           {/* Modal Options */}
-          <TouchableOpacity
-            onPress={handleEditPost}
-            style={tailwind`flex-row items-center py-4 border-b border-gray-200`}
-          >
-            <Icon
-              name="edit"
-              size={24}
-              color={isDarkMode ? '#FEA928' : '#00347D'}
-              style={tailwind`mr-4`}
-            />
-            <Text
-              style={[
-                tailwind`text-lg`,
-                isDarkMode ? tailwind`text-gray-100` : tailwind`text-[#00347D]`
-              ]}
-            >
-              Edit Post
-            </Text>
-          </TouchableOpacity>
+          {/*<TouchableOpacity*/}
+          {/*  onPress={handleEditPost}*/}
+          {/*  style={tailwind`flex-row items-center py-4 border-b border-gray-200`}*/}
+          {/*>*/}
+          {/*  <Icon*/}
+          {/*    name="edit"*/}
+          {/*    size={24}*/}
+          {/*    color={isDarkMode ? '#FEA928' : '#00347D'}*/}
+          {/*    style={tailwind`mr-4`}*/}
+          {/*  />*/}
+          {/*  <Text*/}
+          {/*    style={[*/}
+          {/*      tailwind`text-lg`,*/}
+          {/*      isDarkMode ? tailwind`text-gray-100` : tailwind`text-[#00347D]`*/}
+          {/*    ]}*/}
+          {/*  >*/}
+          {/*    Edit Post*/}
+          {/*  </Text>*/}
+          {/*</TouchableOpacity>*/}
 
           <TouchableOpacity
             onPress={handleDeletePost}

@@ -17,6 +17,9 @@ const homeService = {
         });
 
     },
+  async deletePost(postId: string) {
+    return apiClient.delete('/posts/' + postId);
+  },
   async likePost(postId: string) {
     return apiClient.put('/posts/like/' + postId);
   },

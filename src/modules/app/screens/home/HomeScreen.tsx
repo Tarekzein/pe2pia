@@ -29,7 +29,7 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { theme } = useTheme();
-  const { posts, postsLoading, commentsLoading, fetchPosts, likePost, fetchPostComments, postComments } = useHome();
+  const { posts, postsLoading, commentsLoading, fetchPosts,deletePost, likePost, fetchPostComments, postComments } = useHome();
   const { user } = useAuth();
   const isDarkMode = theme === 'dark';
   const route = useRoute<RouteProp<HomeStackParamList, 'Home'>>();
@@ -111,6 +111,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     setSelectedCategory(category);
   };
 
+  const handleDeletePost = async (postId: string) => {
+    try {
+      // Call the delete post function from the context
+      deletePost(postId);
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
+  }
+
   return (
     <View style={[tailwind`flex-1`, isDarkMode ? tailwind`bg-gray-900` : '']}>
       <HomeHeader navigation={navigation} />
@@ -188,6 +197,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                     likePost={likePost}
                     onPostClick={() => handlePostClick(post)}
                     onCommentsClick={handleCommentsClick}
+                    onDeletePost={handleDeletePost}
                   />
                 )
             )

@@ -49,6 +49,19 @@ export const createPost = createAsyncThunk(
         }
     }
 );
+
+export const deletePost = createAsyncThunk(
+    'home/deletePost',
+    async (postId: string, { rejectWithValue }) => {
+        try {
+            const response = await homeService.deletePost(postId);
+            return postId; // Assuming your API returns a `data` field
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
 export const likePost = createAsyncThunk(
     'home/likePost',
     async (postId: string, { rejectWithValue }) => {
@@ -119,6 +132,16 @@ const homeSlice = createSlice({
             .addCase(createPost.rejected, (state, action) => {
                 state.createPostLoading = false;
                 state.createPostError = action.payload;
+            })
+            // Delete Post
+            .addCase(deletePost.pending, (state) => {
+                state.error = null;
+            })
+            .addCase(deletePost.fulfilled, (state, action) => {
+                state.posts = state.posts.filter((post) => post._id !== action.payload);
+            })
+            .addCase(deletePost.rejected, (state, action) => {
+                state.error = action.payload;
             })
             // Like Post
             .addCase(likePost.pending, (state) => {
