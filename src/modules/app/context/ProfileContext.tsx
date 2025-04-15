@@ -7,16 +7,19 @@ import {
     updateProfile,
     updateProfileImage,
     selectProfileState,
+    fetchUserPosts,
 } from '../stores/profile/profileSlice';
 
 
 interface ProfileContextType {
     profile: any;
+    userPosts: any;
     loading: boolean;
     error: any;
     fetchProfile: () => void;
     updateProfile: (data: any) => void;
     updateProfileImage: (data: any) => void;
+    fetchUserPosts: (userId: string) => void;
 }
 
 const ProfileContext = createContext<ProfileContextType | null>(null);
@@ -27,7 +30,7 @@ interface ProfileProviderProps {
 
 const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const { profile, loading, error } = useSelector(selectProfileState);
+    const { profile,userPosts, loading, error } = useSelector(selectProfileState);
 
     const handleFetchProfile = async () => {
         try {
@@ -53,15 +56,24 @@ const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) => {
         }
     };
 
+    const handleFetchUserPosts = async (userId: string) => {
+        try {
+            await dispatch(fetchUserPosts(userId)).unwrap();
+        } catch (err: any) {
+            console.error(err);
+        }
+    };
     return (
         <ProfileContext.Provider
             value={{
                 profile,
+                userPosts,
                 loading,
                 error,
                 fetchProfile: handleFetchProfile,
                 updateProfile: handleUpdateProfile,
                 updateProfileImage: handleUpdateProfileImage,
+                fetchUserPosts: handleFetchUserPosts,
             }}
         >
             {children}

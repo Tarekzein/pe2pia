@@ -5,12 +5,14 @@ import { updateUser,updateUserProfile } from '../../../auth/stores/authSlice'; /
 
 interface ProfileState {
     profile: any;
+    userPosts: any;
     loading: boolean;
     error: any;
 }
 
 const initialState: ProfileState = {
     profile: null,
+    userPosts: [],
     loading: false,
     error: null,
 };
@@ -53,6 +55,18 @@ export const updateProfileImage = createAsyncThunk(
   }
 );
 
+export const fetchUserPosts = createAsyncThunk(
+    'profile/fetchUserPosts',
+    async (userId: string, { rejectWithValue }) => {
+        try {
+            const response = await searchService.getUserPosts(userId);
+            return response.data.data.posts; // Assuming your API returns a `data` field
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
 const profileSlice = createSlice({
     name: 'profile',
     initialState,
@@ -92,11 +106,23 @@ const profileSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(updateProfileImage.fulfilled, (state, action) => {
+            .addCase(updateProfileImage.fulfilled, (state) => {
                 state.loading = false;
                 state.error = null;
             })
             .addCase(updateProfileImage.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(fetchUserPosts.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchUserPosts.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userPosts = action.payload;
+            })
+            .addCase(fetchUserPosts.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

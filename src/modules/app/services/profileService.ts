@@ -10,7 +10,6 @@ const profileService = {
     console.log('userId:', userId);
     return apiClient.patch(`/users/${userId}`, data);
   },
-
   async updateProfileImage(data: any) {
     const userId = await AsyncStorage.getItem('userId');
     console.log('userId:', userId);
@@ -20,6 +19,9 @@ const profileService = {
         'Content-Type': 'multipart/form-data',
       },
     });
+  },
+  async getUserPosts(userId: string) {
+    return apiClient.get(`/posts/user/${userId}`);
   },
 };
 
