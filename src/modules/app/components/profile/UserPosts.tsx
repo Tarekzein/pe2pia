@@ -1,34 +1,52 @@
-import React, { useEffect, memo } from 'react';
+import React, { memo } from 'react';
 import { View, Text } from 'react-native';
 import tailwind from 'twrnc';
 import { useProfile } from '../../context/ProfileContext';
 import Card from "../home/Card";
 import CardSkeleton from "../home/CardSkeleton";
-import {useFocusEffect} from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface UserPostsProps {
   userID: string;
+  user: any;
   isDarkMode?: boolean;
 }
 
 // Memoized Post component
-const Post = memo(({ post}: { post: any}) => (
+const Post = memo(({ post }: { post: any }) => (
   <Card
     post={post}
     onCommentsClick={() => {}} // Add proper handler
-    userId={post.userId}
+    userId={post.user._id}
     likePost={() => {}} // Add proper handler
   />
 ));
 
-const UserPosts: React.FC<UserPostsProps> = ({ userID, isDarkMode }) => {
+const UserPosts: React.FC<UserPostsProps> = ({ userID, user, isDarkMode }) => {
   const { userPosts, fetchUserPosts, loading } = useProfile();
 
-  useEffect(() => {
-    if (userID) {
-      fetchUserPosts(userID);
-    }
-  }, []);
+  // Use useFocusEffect for better performance
+  useFocusEffect(
+    React.useCallback(() => {
+      if (userID) {
+        fetchUserPosts(userID);
+      }
+    }, [userID])
+  );
+
+  // Filter posts based on user ID and acceptance status
+  const filteredPosts = React.useMemo(() => {
+    if (!userPosts) {return [];}
+
+    return userPosts.filter((post: {isAccepted: boolean}) => {
+      // If viewing own profile, show all posts
+      if (userID === user._id) {
+        return true;
+      }
+      // If viewing other's profile, only show accepted posts
+      return post.isAccepted;
+    });
+  }, [userPosts, userID, user._id]);
 
   if (loading) {
     return <PostsSkeleton isDarkMode={isDarkMode} />;
@@ -46,14 +64,19 @@ const UserPosts: React.FC<UserPostsProps> = ({ userID, isDarkMode }) => {
           isDarkMode ? tailwind`text-[#FEA928]` : tailwind`text-[#00347D]`,
         ]}>
         Posts
+        {userID === user._id && userPosts && userPosts.length !== filteredPosts.length && (
+          <Text style={tailwind`text-sm text-gray-500`}>
+            {` (${filteredPosts.length} public, ${userPosts.length - filteredPosts.length} pending)`}
+          </Text>
+        )}
       </Text>
 
-      {userPosts && userPosts.length > 0 ? (
-        <View style={[tailwind`py-1 `,
+      {filteredPosts.length > 0 ? (
+        <View style={[
+          tailwind`py-1`,
           isDarkMode ? tailwind`bg-gray-900` : tailwind`bg-gray-100`,
-
         ]}>
-          {userPosts.map((post: {_id: React.Key | null | undefined}) => (
+          {filteredPosts.map((post: { _id: React.Key | null | undefined }) => (
             <Post key={post._id} post={post} />
           ))}
         </View>
@@ -64,7 +87,10 @@ const UserPosts: React.FC<UserPostsProps> = ({ userID, isDarkMode }) => {
               tailwind`text-gray-500 text-center`,
               isDarkMode && tailwind`text-gray-400`,
             ]}>
-            No posts yet
+            {userID === user._id ?
+              'You haven\'t posted anything yet' :
+              'No posts available'
+            }
           </Text>
         </View>
       )}

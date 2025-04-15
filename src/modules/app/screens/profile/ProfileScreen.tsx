@@ -52,7 +52,7 @@ const ProfileScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         }
       >
         <InformationCard user={user} isDarkMode={isDarkMode} />
-        <UserPosts userID={user._id} isDarkMode={isDarkMode} />
+        <UserPosts userID={user._id} user={user} isDarkMode={isDarkMode} />
       </ScrollView>
     </View>
   );

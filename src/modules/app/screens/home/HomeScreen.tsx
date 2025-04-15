@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import {View, ScrollView, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl} from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import {View, ScrollView, FlatList, TouchableOpacity, RefreshControl} from 'react-native';
 import {
-  useNavigation,
   useRoute,
   RouteProp,
   NavigationProp
