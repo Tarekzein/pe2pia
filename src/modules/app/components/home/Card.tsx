@@ -16,6 +16,8 @@ interface CardProps {
   likePost: (postId: string) => void;
   onEditPost?: () => void;
   onDeletePost?: (postID: string) => void;
+  followUser?: (data: any) => void;
+  unfollowUser?: (data: any) => void;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -25,7 +27,9 @@ const Card: React.FC<CardProps> = ({
                                      userId,
                                      likePost,
                                      onEditPost,
-                                     onDeletePost
+                                     onDeletePost,
+                                     followUser,
+                                      unfollowUser,
                                    }) => {
   const { theme } = useTheme();
   const { user } = useAuth();
@@ -69,6 +73,20 @@ const Card: React.FC<CardProps> = ({
     }
   };
 
+  const handleFollowUser = () => {
+    console.log('Follow user');
+    if (followUser) {
+      followUser({userId:userId,targetUserId:post.user._id});
+    }
+  };
+
+  const handleUnfollowUser = () => {
+    console.log('Unfollow user');
+    if (unfollowUser) {
+      unfollowUser({userId:userId,targetUserId:post.user._id});
+    }
+  };
+
   return (
     <View style={[tailwind`mb-1  p-4`, {backgroundColor}]}>
       {/* User Info */}
@@ -91,7 +109,7 @@ const Card: React.FC<CardProps> = ({
                 user.following.find((e: {_id: any}) => e._id !== post.user._id) && (
                   <TouchableOpacity
                     style={tailwind`flex-row ml-2 items-center`}
-                    onPress={() => {}}
+                    onPress={handleFollowUser}
                   >
                     <Icon name="plus" size={15} color={textColorSecondary} />
                     <Text
@@ -109,7 +127,7 @@ const Card: React.FC<CardProps> = ({
                 user.following.find((e: {_id: any}) => e._id === post.user._id) && (
                   <TouchableOpacity
                     style={tailwind`flex-row ml-2 items-center`}
-                    onPress={() => {}}
+                    onPress={handleUnfollowUser}
                   >
                     <Icon name="check" size={15} color={textColorSecondary} />
                     <Text

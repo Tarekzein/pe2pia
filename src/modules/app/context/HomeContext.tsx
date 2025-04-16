@@ -9,6 +9,8 @@ import {
     fetchPostComments,
     selectHomeState,
     addComment,
+    followUser,
+    unfollowUser,
 } from '../stores/home/homeSlice';
 
 
@@ -26,6 +28,8 @@ interface HomeContextType {
   fetchPostComments: (postId: string) => void;
   likePost: (postId: string) => void;
   addComment: (postId: string, comment: string) => void;
+  followUser: (data: any) => void;
+  unfollowUser: (data: any) => void;
 }
 
 const HomeContext = createContext<HomeContextType | null>(null);
@@ -83,6 +87,20 @@ const HomeProvider: React.FC<HomeProviderProps> = ({ children }) => {
             console.error(err);
         }
     };
+    const handleFollowUser = async (data: any) => {
+        try {
+            await dispatch(followUser(data)).unwrap();
+        } catch (err: any) {
+            console.error(err);
+        }
+    };
+    const handleUnfollowUser = async (data: any) => {
+        try {
+            await dispatch(unfollowUser(data)).unwrap();
+        } catch (err: any) {
+            console.error(err);
+        }
+    };
     return (
         <HomeContext.Provider value={{ posts, error,createPostError, postComments,
             fetchPosts: handleFetchPosts ,
@@ -94,6 +112,8 @@ const HomeProvider: React.FC<HomeProviderProps> = ({ children }) => {
             fetchPostComments: handleFetchPostComments,
             likePost: handleLikePost,
             addComment: handleAddComment,
+            followUser: handleFollowUser,
+            unfollowUser: handleUnfollowUser,
         }}>
             {children}
         </HomeContext.Provider>

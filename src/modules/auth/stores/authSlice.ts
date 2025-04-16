@@ -113,11 +113,38 @@ const authSlice = createSlice({
     updateUserProfile(state, action) {
       state.user.profilePicture.url = action.payload.url;
       state.user.profilePicture.public_id = action.payload.public_id;
-    }
+    },
+    updateUserFollowing(state, action) {
+      // Check if the ID already exists in the following array
+      const isAlreadyFollowing = state.user.following.some(
+        (following: any) => following === action.payload,
+      );
+
+      if (!isAlreadyFollowing) {
+        // Add the new ID to the following array
+        state.user.following.push(action.payload);
+      }
+
+      console.log('updateUserFollowing action.payload: ', action.payload);
+      console.log(
+        'updateUserFollowing state.user.following: ',
+        state.user.following,
+      );
+    },
+
+    // Optional: Add a separate reducer for unfollowing
+    updateUnfollowUser(state, action) {
+      state.user.following = state.user.following.filter(
+        (following: any) => following !== action.payload,
+      );
+
+      console.log('unfollowUser action.payload: ', action.payload);
+      console.log('unfollowUser state.user.following: ', state.user.following);
+    },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(login.pending, (state) => {
+      .addCase(login.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -132,7 +159,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      .addCase(register.pending, (state) => {
+      .addCase(register.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -145,11 +172,11 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      .addCase(logout.pending, (state) => {
+      .addCase(logout.pending, state => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(logout.fulfilled, (state) => {
+      .addCase(logout.fulfilled, state => {
         state.isAuthenticated = false;
         state.loading = false;
         state.user = null;
@@ -159,11 +186,11 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      .addCase(forgotPassword.pending, (state) => {
+      .addCase(forgotPassword.pending, state => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(forgotPassword.fulfilled, (state,action) => {
+      .addCase(forgotPassword.fulfilled, (state, action) => {
         state.loading = false;
         state.forgotPasswordEmail = action.payload.email;
       })
@@ -171,22 +198,22 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-      .addCase(verifyOtp.pending, (state) => {
+      .addCase(verifyOtp.pending, state => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(verifyOtp.fulfilled, (state) => {
+      .addCase(verifyOtp.fulfilled, state => {
         state.loading = false;
       })
       .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
-      .addCase(resetPassword.pending, (state) => {
+      .addCase(resetPassword.pending, state => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(resetPassword.fulfilled, (state) => {
+      .addCase(resetPassword.fulfilled, state => {
         state.loading = false;
         state.forgotPasswordEmail = '';
       })
@@ -203,5 +230,5 @@ export const selectAuthLoading = (state: RootState) => state.auth.loading;
 export const selectCurrentUser = (state: RootState) => state.auth.user; // Selector for user data
 export const selectToken = (state:RootState) => state.auth.token; // Selector for token
 export const selectForgotPasswordEmail = (state: RootState) => state.auth.forgotPasswordEmail;
-export const { updateUser,updateUserProfile } = authSlice.actions;
+export const { updateUser,updateUserProfile,updateUserFollowing,updateUnfollowUser } = authSlice.actions;
 export default authSlice.reducer;

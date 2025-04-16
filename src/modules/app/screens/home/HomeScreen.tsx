@@ -28,7 +28,7 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { theme } = useTheme();
-  const { posts, postsLoading, commentsLoading, fetchPosts,deletePost, likePost, fetchPostComments, postComments } = useHome();
+  const { posts, postsLoading, commentsLoading, fetchPosts,deletePost, likePost, fetchPostComments, postComments,followUser,unfollowUser } = useHome();
   const { user } = useAuth();
   const isDarkMode = theme === 'dark';
   const route = useRoute<RouteProp<HomeStackParamList, 'Home'>>();
@@ -119,6 +119,24 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     }
   }
 
+  const handleFollowUser = async (data: any) => {
+    try {
+      // Call the follow user function from the context
+      followUser(data);
+    } catch (error) {
+      console.error('Error following user:', error);
+    }
+  }
+
+  const handleUnfollowUser = async (data: any) => {
+    try {
+      // Call the unfollow user function from the context
+      unfollowUser(data);
+    } catch (error) {
+      console.error('Error unfollowing user:', error);
+    }
+  }
+
   return (
     <View style={[tailwind`flex-1`, isDarkMode ? tailwind`bg-gray-900` : '']}>
       <HomeHeader navigation={navigation} />
@@ -197,6 +215,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                     onPostClick={() => handlePostClick(post)}
                     onCommentsClick={handleCommentsClick}
                     onDeletePost={handleDeletePost}
+                    followUser={handleFollowUser}
+                    unfollowUser={handleUnfollowUser}
                   />
                 )
             )

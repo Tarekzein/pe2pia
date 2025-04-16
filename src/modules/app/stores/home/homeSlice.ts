@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../../../store'; // Ensure the path to your store is correct
 import homeService from '../../services/homeService';
+import usersService from '../../services/users/usersService.ts';
+import { updateUserFollowing,updateUnfollowUser } from '../../../auth/stores/authSlice'; // Import updateUser action
 
 interface HomeState {
     posts: any[];
@@ -102,6 +104,36 @@ export const addComment = createAsyncThunk(
     }
 );
 
+export const followUser = createAsyncThunk(
+    'home/followUser',
+    async (data: any, { rejectWithValue,dispatch }) => {
+        try {
+            console.log('followUser data: ', data);
+            const response = await usersService.followUser(data);
+            console.log('followUser response: ', response.data);
+            dispatch(updateUserFollowing(data.targetUserId));
+            return response.data.data; // Assuming your API returns a `data` field
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
+export const unfollowUser = createAsyncThunk(
+    'home/unfollowUser',
+    async (data: any, { rejectWithValue,dispatch }) => {
+        try {
+            console.log('unfollowUser data: ', data);
+            const response = await usersService.unfollowUser(data);
+            console.log('unfollowUser response: ', response.data);
+            dispatch(updateUnfollowUser(data.targetUserId));
+            return response.data.data; // Assuming your API returns a `data` field
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
 const homeSlice = createSlice({
     name: 'home',
     initialState,
@@ -184,6 +216,20 @@ const homeSlice = createSlice({
                 }
             })
             .addCase(addComment.rejected, (state, action) => {
+                state.error = action.payload;
+            })
+            // Follow User
+            .addCase(followUser.pending, (state) => {
+                state.error = null;
+            })
+            .addCase(followUser.rejected, (state, action) => {
+                state.error = action.payload;
+            })
+            // Unfollow User
+            .addCase(unfollowUser.pending, (state) => {
+                state.error = null;
+            })
+            .addCase(unfollowUser.rejected, (state, action) => {
                 state.error = action.payload;
             });
     },

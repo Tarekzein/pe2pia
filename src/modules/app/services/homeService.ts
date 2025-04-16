@@ -26,12 +26,12 @@ const homeService = {
   async getPostComments(postId: string) {
     return apiClient.get('/posts/comments/' + postId);
   },
-    async addComment(postId: string, comment: string) {
-        return apiClient.post('/comments' , {
-            postId: postId,
-            text: comment,
-        });
-    },
+  async addComment(postId: string, comment: string) {
+      return apiClient.post('/comments' , {
+          postId: postId,
+          text: comment,
+      });
+  },
 };
 
 export default homeService;
