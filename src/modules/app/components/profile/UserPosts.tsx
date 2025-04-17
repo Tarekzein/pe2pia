@@ -1,4 +1,4 @@
-import React, {memo, useEffect} from 'react';
+import React, { memo } from 'react';
 import { View, Text } from 'react-native';
 import tailwind from 'twrnc';
 import { useProfile } from '../../context/ProfileContext';
@@ -25,12 +25,15 @@ const Post = memo(({ post }: { post: any }) => (
 const UserPosts: React.FC<UserPostsProps> = ({ userID, user, isDarkMode }) => {
   const { userPosts, fetchUserPosts, loading } = useProfile();
 
-  useEffect(() => {
-    // Fetch user posts when the component mounts
-    if (userID) {
-      fetchUserPosts(userID);
-    }
-  }, []);
+  // Use useFocusEffect for better performance
+  useFocusEffect(
+    React.useCallback(() => {
+      if (userID) {
+        fetchUserPosts(userID);
+      }
+    }, [userID])
+  );
+
   // Filter posts based on user ID and acceptance status
   const filteredPosts = React.useMemo(() => {
     if (!userPosts) {return [];}

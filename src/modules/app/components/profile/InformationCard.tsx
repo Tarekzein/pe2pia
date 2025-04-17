@@ -4,6 +4,7 @@ import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import { useProfile } from '../../context/ProfileContext';
 import Modal from 'react-native-modal';
+import {useFocusEffect} from '@react-navigation/native';
 
 interface InformationCardProps {
   isDarkMode: boolean;
@@ -62,24 +63,30 @@ const InformationCard: React.FC<InformationCardProps> = ({ isDarkMode, user }) =
   const { fetchUserFollowers, fetchUserFollowing,userFollowing,userFollowers } = useProfile();
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (user._id) {
-        try {
-          console.log('Fetching user data...'); // Debug log
-          await Promise.all([
-            fetchUserFollowers(user._id),
-            fetchUserFollowing(user._id)
-          ]);
-          console.log('Followers:', userFollowers); // Debug log
-          console.log('Following:', userFollowing); // Debug log
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        }
-      }
-    };
 
-    fetchData();
   }, [user._id]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        if (user._id) {
+          try {
+            console.log('Fetching user data...'); // Debug log
+            await Promise.all([
+              fetchUserFollowers(user._id),
+              fetchUserFollowing(user._id)
+            ]);
+            console.log('Followers:', userFollowers); // Debug log
+            console.log('Following:', userFollowing); // Debug log
+          } catch (error) {
+            console.error('Error fetching user data:', error);
+          }
+        }
+      };
+
+      fetchData();
+    }, [])
+  );
 
 
   const renderUserList = () => {

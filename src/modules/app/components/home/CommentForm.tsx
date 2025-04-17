@@ -7,6 +7,8 @@ import { useHome } from "../../context/HomeContext";
 interface CommentFormProps {
     isDarkMode: boolean;
     postId: string;
+    onSuccess?: () => void;
+
 }
 
 const CommentForm: React.FC<CommentFormProps> = ({ isDarkMode, postId }) => {

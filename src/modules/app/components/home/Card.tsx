@@ -169,7 +169,7 @@ const Card: React.FC<CardProps> = ({
             </Text>
           </View>
         </View>
-        {post.user._id === userId && (
+        {post.user._id === user.id && (
           <TouchableOpacity onPress={handleActionSheet}>
             <Icon name="more-horizontal" size={28} color={textColorSecondary} />
           </TouchableOpacity>
