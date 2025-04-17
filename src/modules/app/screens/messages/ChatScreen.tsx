@@ -563,7 +563,7 @@ const ChatScreen: React.FC<ChatScreenProps> = ({ route,navigation }) => {
           />
         ) : (
           <Image
-            source={{ uri: otherUser.profilePicture.url }}
+            source={{ uri: otherUser?.profilePicture?.url }}
             style={tailwind`w-10 h-10 rounded-full bg-gray-400 mr-3`}
           />
         )}

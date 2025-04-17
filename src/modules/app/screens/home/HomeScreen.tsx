@@ -210,13 +210,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   <Card
                     key={index}
                     post={post}
-                    userId={user.id}
+                    userId={user?.id}
                     likePost={likePost}
                     onPostClick={() => handlePostClick(post)}
                     onCommentsClick={handleCommentsClick}
                     onDeletePost={handleDeletePost}
                     followUser={handleFollowUser}
                     unfollowUser={handleUnfollowUser}
+                    navigation={navigation}
                   />
                 )
             )

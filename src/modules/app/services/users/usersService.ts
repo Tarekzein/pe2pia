@@ -4,12 +4,15 @@ const usersService = {
     async fetchUser(id: string) {
         return apiClient.get(`/admin/${id}`);
     },
-    async followUser(data: any) {
+    async toggleFollow(data: any) {
         return apiClient.post(`/users/follow`, data);
 
     },
-    async unfollowUser(data: any) {
-        return apiClient.post(`/users/unFollow`, data);
+    async fetchUserFollowers(id: string) {
+        return apiClient.get(`/users/followers/${id}`);
+    },
+    async fetchUserFollowing(id: string) {
+        return apiClient.get(`/users/following/${id}`);
     },
 };
 

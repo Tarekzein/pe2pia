@@ -10,9 +10,9 @@ import React from 'react';
 
 interface User {
   id: string;
-  firstName: string;
-  lastName: string;
-  profilePicture?: string;
+  FirstName: string;
+  LastName: string;
+  profilePicture?: any;
   isOnline: boolean;
 }
 
@@ -22,7 +22,7 @@ const UserAvatar: React.FC<{ user: User; isDarkMode: boolean; onPress: () => voi
     <TouchableOpacity onPress={onPress} style={tailwind`mr-4 items-center`}>
       <View style={tailwind`relative`}>
         <Image
-          source={{ uri: user.profilePicture || 'https://i.pravatar.cc/300' }}
+          source={{ uri: user.profilePicture.url || 'https://i.pravatar.cc/300' }}
           style={[
             tailwind`w-16 h-16 rounded-full`,
             { borderWidth: 2, borderColor: isDarkMode ? '#FEA928' : '#00347D' }
@@ -43,7 +43,7 @@ const UserAvatar: React.FC<{ user: User; isDarkMode: boolean; onPress: () => voi
           isDarkMode ? tailwind`text-gray-200` : tailwind`text-gray-800`
         ]}
       >
-        {user.firstName}
+        {user.FirstName} {user.LastName}
       </Text>
     </TouchableOpacity>
   );

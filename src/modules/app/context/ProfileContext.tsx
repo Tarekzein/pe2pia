@@ -8,18 +8,24 @@ import {
     updateProfileImage,
     selectProfileState,
     fetchUserPosts,
+    fetchUserFollowers,
+    fetchUserFollowing,
 } from '../stores/profile/profileSlice';
 
 
 interface ProfileContextType {
     profile: any;
     userPosts: any;
+    userFollowers: any;
+    userFollowing: any;
     loading: boolean;
     error: any;
     fetchProfile: () => void;
     updateProfile: (data: any) => void;
     updateProfileImage: (data: any) => void;
     fetchUserPosts: (userId: string) => void;
+    fetchUserFollowers: (userId: string) => void;
+    fetchUserFollowing: (userId: string) => void;
 }
 
 const ProfileContext = createContext<ProfileContextType | null>(null);
@@ -30,7 +36,7 @@ interface ProfileProviderProps {
 
 const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const { profile,userPosts, loading, error } = useSelector(selectProfileState);
+    const { profile,userPosts,userFollowers,userFollowing, loading, error } = useSelector(selectProfileState);
 
     const handleFetchProfile = async () => {
         try {
@@ -63,17 +69,37 @@ const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) => {
             console.error(err);
         }
     };
+
+    const handleFetchUserFollowers = async (userId: string) => {
+        try {
+            await dispatch(fetchUserFollowers(userId)).unwrap();
+        } catch (err: any) {
+            console.error(err);
+        }
+    };
+    const handleFetchUserFollowing = async (userId: string) => {
+        try {
+            await dispatch(fetchUserFollowing(userId)).unwrap();
+        } catch (err: any) {
+            console.error(err);
+        }
+    };
+
     return (
         <ProfileContext.Provider
             value={{
                 profile,
                 userPosts,
+                userFollowers,
+                userFollowing,
                 loading,
                 error,
                 fetchProfile: handleFetchProfile,
                 updateProfile: handleUpdateProfile,
                 updateProfileImage: handleUpdateProfileImage,
                 fetchUserPosts: handleFetchUserPosts,
+                fetchUserFollowers: handleFetchUserFollowers,
+                fetchUserFollowing: handleFetchUserFollowing,
             }}
         >
             {children}

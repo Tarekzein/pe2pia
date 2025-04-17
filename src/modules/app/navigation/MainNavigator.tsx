@@ -13,8 +13,7 @@ import { useTheme } from '../../../context/ThemeContext';
 import { initializeNotifications } from '../services/fcm/notificationService';
 import {
   EventArg,
-  MaterialTopTabNavigationProp,
-  ParamListBase
+  ParamListBase,
 } from '@react-navigation/native';
 
 const Tab = createMaterialTopTabNavigator();

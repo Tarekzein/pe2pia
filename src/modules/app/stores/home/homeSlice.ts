@@ -108,9 +108,7 @@ export const followUser = createAsyncThunk(
     'home/followUser',
     async (data: any, { rejectWithValue,dispatch }) => {
         try {
-            console.log('followUser data: ', data);
-            const response = await usersService.followUser(data);
-            console.log('followUser response: ', response.data);
+            const response = await usersService.toggleFollow(data);
             dispatch(updateUserFollowing(data.targetUserId));
             return response.data.data; // Assuming your API returns a `data` field
         } catch (error: any) {
@@ -123,9 +121,7 @@ export const unfollowUser = createAsyncThunk(
     'home/unfollowUser',
     async (data: any, { rejectWithValue,dispatch }) => {
         try {
-            console.log('unfollowUser data: ', data);
-            const response = await usersService.unfollowUser(data);
-            console.log('unfollowUser response: ', response.data);
+            const response = await usersService.toggleFollow(data);
             dispatch(updateUnfollowUser(data.targetUserId));
             return response.data.data; // Assuming your API returns a `data` field
         } catch (error: any) {

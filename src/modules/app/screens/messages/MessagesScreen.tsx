@@ -15,7 +15,10 @@ import Icon from 'react-native-vector-icons/Feather';
 import { useTheme } from '../../../../context/ThemeContext';
 import { useAuth } from '../../../../context/AuthContext.tsx';
 import { useMessages } from "../../context/MessagesContext.tsx";
+
 import UserAvatar from '../../components/messages/UserAvatar.tsx';
+import {useFocusEffect} from '@react-navigation/native';
+import ConfirmationModal from './../../components/messages/ConfirmationModal.tsx';
 
 const tabs = ['All chats', 'Groups', 'Requests'];
 const screenWidth = Dimensions.get('window').width;
@@ -32,18 +35,25 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
   const currentTabIndex = tabs.indexOf(activeTab);
   const { theme } = useTheme();
   const { user } = useAuth();
-  const { fetchChats, chats } = useMessages();
+  const { fetchChats, chats,fetchFollowing,following,createConversation,newConversation } = useMessages();
   const isDarkMode = theme === 'dark';
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const appState = useRef(AppState.currentState);
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchFollowingUsers = async () => {
+        try {
+          fetchFollowing(user.id);
+        } catch (err: any) {
+          console.error(err);
+        }
+      };
 
-  // Dummy online users list
-  const [onlineUsers, setOnlineUsers] = useState<any>([
-    { id: '1', firstName: 'Alice', lastName: 'Smith', profilePicture: 'https://i.pravatar.cc/301', isOnline: true },
-    { id: '2', firstName: 'Bob', lastName: 'Jones', profilePicture: 'https://i.pravatar.cc/302', isOnline: true },
-    { id: '3', firstName: 'Charlie', lastName: 'Brown', profilePicture: 'https://i.pravatar.cc/303', isOnline: false },
-    // ... other users
-  ]);
+      fetchFollowingUsers();
+    }, [])
+  );
 
   // Start periodic chat fetching
   const startPeriodicFetching = useCallback(() => {
@@ -138,6 +148,44 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
     });
   };
 
+  const handleUserPress = (user: any) => {
+    setSelectedUser(user);
+    setIsConfirmModalVisible(true);
+  };
+
+  const handleStartConversation = async () => {
+    if (!selectedUser) return;
+
+    try {
+      // Check if conversation already exists
+      const existingChat = chats.find(chat =>
+        chat.members.some((member: {id: any}) => member.id === selectedUser.id),
+      );
+
+      if (!existingChat) {
+        navigation.navigate('Chat', { chat: existingChat, user });
+      } else {
+        // Create new conversation
+        const newChat = {
+          senderId: user.id,
+          receiverId: selectedUser.id,
+        };
+
+        // Add your logic to create chat in backend
+        await createConversation(newChat);
+        if (newConversation) {
+          navigation.navigate('Chat', { chat: newConversation, user });
+        }
+      }
+    } catch (error) {
+      console.error('Error starting conversation:', error);
+      // Handle error (show toast, etc.)
+    } finally {
+      setIsConfirmModalVisible(false);
+      setSelectedUser(null);
+    }
+  };
+
   return (
     <View style={[tailwind`flex-1`, isDarkMode ? tailwind`bg-gray-800` : tailwind`bg-[#FFF8EC]`]}>
       {/* Header */}
@@ -148,10 +196,10 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
           style={isDarkMode ? tailwind`text-white` : tailwind`text-[#00347D]`}
           onPress={() => navigation.goBack()}
         />
-        <View style={tailwind`flex-row items-center`}>
-          <Icon name="edit" style={tailwind`mr-7`} size={25} color="#FEA928" />
-          <Icon name="search" size={25} color="#FEA928" />
-        </View>
+        {/*<View style={tailwind`flex-row items-center`}>*/}
+        {/*  <Icon name="edit" style={tailwind`mr-7`} size={25} color="#FEA928" />*/}
+        {/*  <Icon name="search" size={25} color="#FEA928" />*/}
+        {/*</View>*/}
       </View>
 
       {/* Tabs */}
@@ -180,14 +228,12 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
       {/* Horizontal scroll of online users */}
       <View style={tailwind`mt-4 px-4`}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {onlineUsers.map((onlineUser) => (
+          {following.map((user) => (
             <UserAvatar
-              key={onlineUser.id}
-              user={onlineUser}
+              key={user.id}
+              user={user}
               isDarkMode={isDarkMode}
-              onPress={() => {
-                navigation.navigate('Chat', { chat: null, user: onlineUser });
-              }}
+              onPress={() => handleUserPress(user)}
             />
           ))}
         </ScrollView>
@@ -252,6 +298,18 @@ const MessagesScreen: React.FC<MessagesScreenProps> = ({ navigation }) => {
           ))}
         </ScrollView>
       </Animated.View>
+
+      <ConfirmationModal
+        isVisible={isConfirmModalVisible}
+        onClose={() => {
+          setIsConfirmModalVisible(false);
+          setSelectedUser(null);
+        }}
+        onConfirm={handleStartConversation}
+        user={selectedUser}
+        isDarkMode={isDarkMode}
+      />
+
     </View>
   );
 };

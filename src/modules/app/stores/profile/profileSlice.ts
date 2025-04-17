@@ -1,11 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {RootState} from '../../../store'; // Ensure the path to your store is correct
 import searchService from '../../services/profileService';
+import usersService from '../../services/users/usersService.ts';
 import { updateUser,updateUserProfile } from '../../../auth/stores/authSlice'; // Import updateUser action
 
 interface ProfileState {
     profile: any;
     userPosts: any;
+    userFollowers: any;
+    userFollowing: any;
     loading: boolean;
     error: any;
 }
@@ -13,6 +16,8 @@ interface ProfileState {
 const initialState: ProfileState = {
     profile: null,
     userPosts: [],
+    userFollowers: [],
+    userFollowing: [],
     loading: false,
     error: null,
 };
@@ -61,6 +66,30 @@ export const fetchUserPosts = createAsyncThunk(
         try {
             const response = await searchService.getUserPosts(userId);
             return response.data.data.posts; // Assuming your API returns a `data` field
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
+export const fetchUserFollowers = createAsyncThunk(
+    'profile/fetchUserFollowers',
+    async (userId: string, { rejectWithValue }) => {
+        try {
+            const response = await usersService.fetchUserFollowers(userId);
+            return response.data.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
+export const fetchUserFollowing = createAsyncThunk(
+    'profile/fetchUserFollowing',
+    async (userId: string, { rejectWithValue }) => {
+        try {
+            const response = await usersService.fetchUserFollowing(userId);
+            return response.data.data;
         } catch (error: any) {
             return rejectWithValue(error.response?.data || error.message);
         }
@@ -123,6 +152,30 @@ const profileSlice = createSlice({
                 state.userPosts = action.payload;
             })
             .addCase(fetchUserPosts.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(fetchUserFollowers.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchUserFollowers.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userFollowers = action.payload;
+            })
+            .addCase(fetchUserFollowers.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(fetchUserFollowing.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchUserFollowing.fulfilled, (state, action) => {
+                state.loading = false;
+                state.userFollowing = action.payload;
+            })
+            .addCase(fetchUserFollowing.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

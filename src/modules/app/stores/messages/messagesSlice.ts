@@ -42,6 +42,8 @@ interface Message {
 interface MessagesState {
     chats: Chat[];
     messages: any[];
+    following: any[];
+    newConversation: any | null;
     loading: boolean;
     error: any;
 }
@@ -49,6 +51,8 @@ interface MessagesState {
 const initialState: MessagesState = {
     chats: [],
     messages: [],
+    following: [],
+    newConversation: null,
     loading: false,
     error: null,
 };
@@ -150,6 +154,31 @@ export const sendMessage = createAsyncThunk<
     }
 );
 
+export const fetchFollowing = createAsyncThunk(
+    'messages/fetchFollowing',
+    async (id:string, { rejectWithValue }) => {
+        try {
+            const response = await usersService.fetchUserFollowing(id);
+            return response.data.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
+export const createConversation = createAsyncThunk(
+    'messages/createConversation',
+    async (data: any, { rejectWithValue }) => {
+        try {
+            const response = await messagesService.createConversation(data);
+            console.log('createConversation response:', response.data);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
+    }
+);
+
 const messagesSlice = createSlice({
     name: 'messages',
     initialState,
@@ -190,7 +219,7 @@ const messagesSlice = createSlice({
                   if (index === -1) {
                       // Chat is new, so add it
                       state.chats.push(chat);
-                  } else if (chat.unreadCount > 0 || chat.lastMessage._id !== state.chats[index].lastMessage._id) {
+                  } else if (chat.unreadCount > 0 || chat.lastMessage?._id !== state.chats[index].lastMessage?._id) {
                       // Chat exists and has an unread count greater than zero, so update it
                       state.chats[index] = chat;
                   }
@@ -220,6 +249,7 @@ const messagesSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
+            // Uncomment and implement the sendMessage case if needed
             // .addCase(sendMessage.pending, (state) => {
             //     state.loading = true;
             //     state.error = null;
@@ -231,7 +261,36 @@ const messagesSlice = createSlice({
             // .addCase(sendMessage.rejected, (state, action) => {
             //     state.loading = false;
             //     state.error = action.payload;
-            // });
+            // })
+            .addCase(fetchFollowing.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchFollowing.fulfilled, (state, action) => {
+                state.loading = false;
+                // Handle the fetched following data here
+                state.following = action.payload;
+            })
+            .addCase(fetchFollowing.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            .addCase(createConversation.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(createConversation.fulfilled, (state, action) => {
+                state.loading = false;
+                if (action.payload.existingConversation) {
+                    state.newConversation = action.payload.existingConversation;
+                }else {
+                    state.newConversation = action.payload;
+                }
+            })
+            .addCase(createConversation.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            });
     },
 });
 

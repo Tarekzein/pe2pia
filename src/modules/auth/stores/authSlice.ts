@@ -53,7 +53,7 @@ export const logout = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
-      await authService.logout();
+      // await authService.logout();
       console.log('logout successful');
       return; // Return nothing for fulfilled case
     } catch (error: any) {
@@ -179,7 +179,6 @@ const authSlice = createSlice({
       .addCase(logout.fulfilled, state => {
         state.isAuthenticated = false;
         state.loading = false;
-        state.user = null;
         state.token = null; // Clear token in state
       })
       .addCase(logout.rejected, (state, action) => {

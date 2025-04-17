@@ -7,16 +7,22 @@ import {
     fetchMessages,
     sendMessage,
     selectMessagesState,
+    fetchFollowing,
+    createConversation
 } from '../stores/messages/messagesSlice';
 
 interface MessagesContextType {
   chats: any[];
   messages: any[];
+  following: any[];
+  newConversation: any;
   loading: boolean;
   error: any;
   fetchChats: (id: string) => void;
   fetchMessages: (id: string) => void;
   sendMessage: (message: any) => void;
+  fetchFollowing: (id: string) => void;
+  createConversation: (data: any) => void;
 }
 
 const MessagesContext = createContext<MessagesContextType | null>(null);
@@ -27,7 +33,7 @@ interface MessagesProviderProps {
 
 const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) => {
     const dispatch = useDispatch<AppDispatch>();
-    const { chats, messages, loading, error } = useSelector(selectMessagesState);
+    const { chats, messages, loading, error,following,newConversation } = useSelector(selectMessagesState);
 
     const handleFetchChats = async (id:string) => {
         try {
@@ -53,16 +59,37 @@ const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) => {
             console.error(err);
         }
     };
+
+    const handleFetchFollowing = async (id:string) => {
+        try {
+            await dispatch(fetchFollowing(id)).unwrap();
+        } catch (err: any) {
+            console.error(err);
+        }
+    };
+
+    const handleCreateConversation = async (data: any) => {
+        try {
+            await dispatch(createConversation(data)).unwrap();
+        } catch (err: any) {
+            console.error(err);
+        }
+    };
+
     return (
         <MessagesContext.Provider
             value={{
                 chats,
                 messages,
+                following,
+                newConversation,
                 loading,
                 error,
                 fetchChats: handleFetchChats,
                 fetchMessages: handleFetchMessages,
                 sendMessage: handleSendMessage,
+                fetchFollowing: handleFetchFollowing,
+                createConversation: handleCreateConversation,
             }}
         >
             {children}

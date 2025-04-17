@@ -18,7 +18,41 @@ interface CardProps {
   onDeletePost?: (postID: string) => void;
   followUser?: (data: any) => void;
   unfollowUser?: (data: any) => void;
+  navigation?: any;
 }
+
+const FollowButton = ({
+                        isFollowing,
+                        onFollow,
+                        onUnfollow,
+                        textColor
+                      }: {
+  isFollowing: boolean;
+  onFollow: () => void;
+  onUnfollow: () => void;
+  textColor: string;
+}) => (
+  <TouchableOpacity
+    style={tailwind`flex-row ml-2 items-center`}
+    onPress={isFollowing ? onUnfollow : onFollow}
+    activeOpacity={0.7}
+  >
+    <Icon
+      name={isFollowing ? "check" : "plus"}
+      size={15}
+      color={textColor}
+    />
+    <Text
+      style={[
+        tailwind`text-sm font-bold ml-1`,
+        {color: textColor},
+      ]}
+    >
+      {isFollowing ? 'following' : 'follow'}
+    </Text>
+  </TouchableOpacity>
+);
+
 
 const Card: React.FC<CardProps> = ({
                                      post,
@@ -30,6 +64,7 @@ const Card: React.FC<CardProps> = ({
                                      onDeletePost,
                                      followUser,
                                       unfollowUser,
+                                      navigation,
                                    }) => {
   const { theme } = useTheme();
   const { user } = useAuth();
@@ -92,10 +127,24 @@ const Card: React.FC<CardProps> = ({
       {/* User Info */}
       <View style={tailwind`flex-row justify-between items-start`}>
         <View style={tailwind`flex-row`}>
-          <Image
-            source={{uri: post.user.profilePicture.url}}
-            style={[tailwind`w-10 h-10 mr-2 rounded-full`]}
-          />
+          <TouchableOpacity
+            onPress={() =>{
+              if(post.user._id !== userId){
+                navigation && navigation.navigate('ProfileNavigation',{
+                  screen: 'UsersProfile',
+                  params: {user: post.user},
+                });
+              }
+            }}
+            activeOpacity={0.7}
+            style={tailwind`mr-2`}
+          >
+            <Image
+              source={{uri: post.user.profilePicture.url}}
+              style={[tailwind`w-12 h-12  rounded-full`]}
+            />
+          </TouchableOpacity>
+
           <View>
             <View style={tailwind`flex-row justify-between items-center  mb-1`}>
               <Text
@@ -105,42 +154,15 @@ const Card: React.FC<CardProps> = ({
                 ]}>
                 {post.user.FirstName} {post.user.LastName}
               </Text>
-              {post.user._id !== userId &&
-                user.following.find((e: {_id: any}) => e._id !== post.user._id) && (
-                  <TouchableOpacity
-                    style={tailwind`flex-row ml-2 items-center`}
-                    onPress={handleFollowUser}
-                  >
-                    <Icon name="plus" size={15} color={textColorSecondary} />
-                    <Text
-                      style={[
-                        tailwind`text-sm font-bold`,
-                        {color: textColorSecondary}
-                      ]}
-                    >
-                      follow
-                    </Text>
-                  </TouchableOpacity>
-                )
-              }
-              {
-                user.following.find((e: {_id: any}) => e._id === post.user._id) && (
-                  <TouchableOpacity
-                    style={tailwind`flex-row ml-2 items-center`}
-                    onPress={handleUnfollowUser}
-                  >
-                    <Icon name="check" size={15} color={textColorSecondary} />
-                    <Text
-                      style={[
-                        tailwind`text-sm font-bold`,
-                        {color: textColorSecondary}
-                      ]}
-                    >
-                      following
-                    </Text>
-                  </TouchableOpacity>
-                )
-              }
+              {post.user._id !== userId && (
+                <FollowButton
+                  isFollowing={user.following.includes(post.user._id)}
+                  onFollow={handleFollowUser}
+                  onUnfollow={handleUnfollowUser}
+                  textColor={textColorSecondary}
+                />
+              )}
+
             </View>
             <Text style={[tailwind`text-sm`, {color: textColorSecondary}]}>
               {post.category}

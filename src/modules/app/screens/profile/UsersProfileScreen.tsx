@@ -5,12 +5,11 @@ import Icon from 'react-native-vector-icons/Feather';
 import InformationCard from '../../components/profile/InformationCard';
 import UserPosts from '../../components/profile/UserPosts';
 import { useTheme } from '../../../../context/ThemeContext';
-import { useAuth } from '../../../../context/AuthContext';
 import { useProfile } from '../../context/ProfileContext';
 
-const ProfileScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+const UserProfileScreen: React.FC<{ navigation: any, route:any }> = ({ navigation,route }) => {
   const { theme } = useTheme();
-  const { user } = useAuth();
+  const user = route.params.user;
   const { loading, fetchUserPosts } = useProfile();
   const isDarkMode = theme === 'dark';
 
@@ -21,10 +20,7 @@ const ProfileScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   };
 
   return (
-    <View style={[
-      tailwind`flex-1`,
-      isDarkMode ? tailwind`bg-gray-800` : tailwind`bg-[#FFF8EC]`
-    ]}>
+    <View style={[tailwind`flex-1`, isDarkMode ? tailwind`bg-gray-800` : tailwind`bg-[#FFF8EC]`]}>
       {/* Header */}
       <View style={tailwind`flex-row justify-between items-center mt-5 mx-5`}>
         <TouchableOpacity
@@ -35,12 +31,6 @@ const ProfileScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             size={30}
             style={isDarkMode ? tailwind`text-white` : tailwind`text-[#00347D]`}
           />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={tailwind`flex-row items-center`}
-          onPress={() => navigation.navigate('Settings')}
-        >
-          <Icon name="settings" size={25} color="#FEA928" />
         </TouchableOpacity>
       </View>
 
@@ -61,4 +51,4 @@ const ProfileScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   );
 };
 
-export default ProfileScreen;
+export default UserProfileScreen;

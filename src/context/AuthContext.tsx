@@ -75,7 +75,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const handleLogout = async () => {
-    await dispatch(logout()).unwrap();
+      dispatch(logout());
+      Toast.show({
+        type: 'success',
+        text1: 'Logout Successful',
+        text2: 'You have been logged out.',
+        visibilityTime: 4000,
+        autoHide: true,
+      });
   };
 
   const handleForgotPassword = (email: string) => {

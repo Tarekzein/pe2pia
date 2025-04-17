@@ -1,6 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import ProfileScreen from '../screens/profile/ProfileScreen';
+import UsersProfileScreen from '../screens/profile/UsersProfileScreen.tsx';
 import SettingsScreen from '../screens/profile/SettingsScreen';
 import LanguageScreen from '../screens/profile/LanguageScreen';
 import EditProfileScreen from '../screens/profile/EditProfileScreen';
@@ -18,6 +19,10 @@ const ProfileNavigator = () => {
             <Stack.Screen
                 name="Profile"
                 component={ProfileScreen}
+            />
+            <Stack.Screen
+                name="UsersProfile"
+                component={UsersProfileScreen}
             />
             <Stack.Screen
                 name="Settings"

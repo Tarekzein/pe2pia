@@ -14,6 +14,9 @@ const messagesService = {
         },
       });
   },
+  async createConversation(data: any) {
+    return apiClient.post('/conversation', data);
+  }
 };
 
 export default messagesService;
